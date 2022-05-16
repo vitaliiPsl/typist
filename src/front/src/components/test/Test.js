@@ -15,7 +15,7 @@ export default class Test extends React.Component {
     constructor(props) {
         super(props);
 
-        let initTime = 30;
+        let initTime = 10;
         this.state = {
             initTime: initTime,
             time: initTime,
