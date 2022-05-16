@@ -1,0 +1,27 @@
+.Header{
+    padding: 24px 0;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-box{
+    width: 50%;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 24px;
+}
+
+.menu-link{
+    min-width: 150px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: 0.5s;
+}
+
+.menu-item .menu-link.active{
+    background: var(--highlight-color);
+}
