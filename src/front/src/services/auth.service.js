@@ -2,8 +2,6 @@ const API = "http://localhost:8080/api/auth/";
 
 class AuthService {
     login(loginData) {
-        console.log(loginData);
-
         return  fetch(API + "login", {
             method: "post",
             headers: {
