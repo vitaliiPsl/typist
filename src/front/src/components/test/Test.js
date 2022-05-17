@@ -168,7 +168,8 @@ export default class Test extends React.Component {
                     <TestResult result={this.state.testResult}/>
                 }
 
-                <div className="test-timer small">{this.state.time}</div>
+                <div className="test-timer">{this.state.time}</div>
+                {/*<div className="test-timer small">{this.state.time}</div>*/}
 
                 <div className="control-row">
                     <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput}/>
