@@ -5,6 +5,7 @@ import testService from '../../services/test.service'
 import TestTokens from "./TestTokens";
 import Symbol from "./Symbol";
 import TestResult from "./TestResult";
+import authService from "../../services/auth.service";
 
 
 const TEST_STATUS_NOT_STARTED = 'not started';
@@ -74,7 +75,26 @@ export default class Test extends React.Component {
             testResult: result
         });
 
-        //TODO: save test result
+        this.saveTestResult(result);
+    }
+
+    async saveTestResult(result) {
+        if (authService.loadCurrentUser() !== null && result.wpm > 25) {
+            let response = await testService.saveTest(result);
+
+            if(!response.ok){
+                this.handleError(response);
+            }
+        }
+    }
+
+    async handleError(response){
+        if (response.status === 403) {
+            let apiError = await response.json();
+            if (apiError.message) {
+                this.props.addError(apiError.message);
+            }
+        }
     }
 
     startTimer() {
@@ -169,7 +189,6 @@ export default class Test extends React.Component {
                 }
 
                 <div className="test-timer">{this.state.time}</div>
-                {/*<div className="test-timer small">{this.state.time}</div>*/}
 
                 <div className="control-row">
                     <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput}/>

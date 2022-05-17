@@ -1,4 +1,19 @@
+import authHeader from "./auth.header";
+
+const API = "http://localhost:8080/api/tests/";
+
 class TestService{
+    saveTest(test){
+        return fetch(API + 'save', {
+            method: 'post',
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': authHeader()
+            },
+            body: JSON.stringify(test),
+        });
+    }
+
     getTestResult(textTokens, inputTokens, wordsCount, time){
         let statistic = this.getTestStatistic(textTokens, inputTokens, wordsCount);
         console.log(statistic);
@@ -8,7 +23,6 @@ class TestService{
 
         return {wpm: rawWpm, accuracy: accuracy, time: time};
     }
-
 
     getTestStatistic(textTokens, inputTokens, wordsCount) {
         let correct = 0;
