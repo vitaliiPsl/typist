@@ -1,7 +1,7 @@
 package com.example.typist.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -35,7 +35,7 @@ public class Test {
     @Column(name = "date")
     private LocalDateTime testDate = LocalDateTime.now();
 
-    @JsonBackReference
+    @JsonIgnoreProperties("tests")
     @ManyToOne(optional = false)
     private User user;
 

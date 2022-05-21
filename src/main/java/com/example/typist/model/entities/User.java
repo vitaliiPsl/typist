@@ -35,10 +35,9 @@ public class User {
     @Size(min = 6, message = "Minimal password length - 6 symbols")
     private String password;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private Set<Test> typingTests = new HashSet<>();
+    private Set<Test> tests = new HashSet<>();
 
     public User() {}
 

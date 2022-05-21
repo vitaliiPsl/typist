@@ -18,6 +18,6 @@ public class UserDto {
         this.id = user.getId();
         this.username = user.getEmail();
         this.nickname = user.getNickname() == null || user.getNickname().isBlank() ? user.getEmail() : user.getNickname();
-        this.tests = user.getTypingTests();
+        this.tests = user.getTests();
     }
 }
