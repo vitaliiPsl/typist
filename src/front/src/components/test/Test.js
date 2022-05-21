@@ -6,7 +6,7 @@ import TestTokens from "./TestTokens";
 import Symbol from "./Symbol";
 import TestResult from "./TestResult";
 import authService from "../../services/auth.service";
-
+import TestConfiguration from "./TestConfiguration";
 
 const TEST_STATUS_NOT_STARTED = 'not started';
 const TEST_STATUS_IN_PROGRESS = 'in progress';
@@ -16,8 +16,11 @@ export default class Test extends React.Component {
     constructor(props) {
         super(props);
 
-        let initTime = 10;
+        let timeOptions = [15, 30, 50, 90];
+        let initTime = 15;
+
         this.state = {
+            timeOptions: timeOptions,
             initTime: initTime,
             time: initTime,
             text: [],
@@ -32,6 +35,7 @@ export default class Test extends React.Component {
         this.stop = this.stop.bind(this);
         this.restart = this.restart.bind(this);
         this.handleInput = this.handleInput.bind(this);
+        this.setTime = this.setTime.bind(this);
     }
 
     componentDidMount() {
@@ -82,13 +86,13 @@ export default class Test extends React.Component {
         if (authService.loadCurrentUser() !== null && result.wpm > 25) {
             let response = await testService.saveTest(result);
 
-            if(!response.ok){
+            if (!response.ok) {
                 this.handleError(response);
             }
         }
     }
 
-    async handleError(response){
+    async handleError(response) {
         if (response.status === 403) {
             let apiError = await response.json();
             if (apiError.message) {
@@ -112,6 +116,10 @@ export default class Test extends React.Component {
         }
     }
 
+    setTime(time) {
+        this.setState({initTime: time, time: time});
+    }
+
     loadText() {
         return textService.getWords(100);
     }
@@ -127,7 +135,7 @@ export default class Test extends React.Component {
     }
 
     handleInput(e) {
-        if(this.state.status !== TEST_STATUS_IN_PROGRESS){
+        if (this.state.status !== TEST_STATUS_IN_PROGRESS) {
             this.start();
         }
 
@@ -183,6 +191,9 @@ export default class Test extends React.Component {
     render() {
         return (
             <div className="Test">
+                {this.state.status !== TEST_STATUS_IN_PROGRESS &&
+                    <TestConfiguration timeOptions={this.state.timeOptions} time={this.state.initTime} setTime={this.setTime}/>
+                }
 
                 {this.state.status === TEST_STATUS_COMPLETE &&
                     <TestResult result={this.state.testResult}/>
@@ -191,8 +202,8 @@ export default class Test extends React.Component {
                 <div className="test-timer">{this.state.time}</div>
 
                 <div className="control-row">
-                    <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput}/>
-                    <button className={'restart-btn'} onClick={this.restart}>Restart</button>
+                    <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput} tabIndex={1}/>
+                    <button className={'restart-btn'} onClick={this.restart} tabIndex={2}>Restart</button>
                 </div>
 
                 <TestTokens tokens={this.state.tokens} current={this.state.wordCount} wrongTokens={this.state.wrongTokens}/>

@@ -7,6 +7,8 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
+
+    position: relative;
 }
 
 .TestResult{
@@ -64,6 +66,33 @@
 
     font-size: 16px;
     border-radius: 0 8px 8px 0;
+}
+
+.TestConfiguration{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.TestConfiguration .config-row{
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.TestConfiguration .config-row .option{
+    cursor: pointer;
+}
+
+.TestConfiguration .config-row .option.selected {
+    color: var(--highlight-color);
 }
 
 .TestTokens {
