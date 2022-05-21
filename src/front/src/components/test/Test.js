@@ -7,6 +7,7 @@ import Symbol from "./Symbol";
 import TestResult from "./TestResult";
 import authService from "../../services/auth.service";
 import TestConfiguration from "./TestConfiguration";
+import Ranking from "../rating/Ranking";
 
 const TEST_STATUS_NOT_STARTED = 'not started';
 const TEST_STATUS_IN_PROGRESS = 'in progress';
@@ -191,6 +192,8 @@ export default class Test extends React.Component {
     render() {
         return (
             <div className="Test">
+                <Ranking/>
+
                 {this.state.status !== TEST_STATUS_IN_PROGRESS &&
                     <TestConfiguration timeOptions={this.state.timeOptions} time={this.state.initTime} setTime={this.setTime}/>
                 }

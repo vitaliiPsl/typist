@@ -14,6 +14,15 @@ class TestService{
         });
     }
 
+    loadTodayTests(){
+        return fetch(API + 'top', {
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': authHeader()
+            }
+        });
+    }
+
     getTestResult(textTokens, inputTokens, wordsCount, time){
         let statistic = this.getTestStatistic(textTokens, inputTokens, wordsCount);
         console.log(statistic);
