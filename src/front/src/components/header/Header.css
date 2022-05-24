@@ -22,6 +22,10 @@
     transition: 0.5s;
 }
 
+.menu-link span{
+    font-weight: bold;
+}
+
 .menu-item .menu-link.active{
     background: var(--highlight-color);
 }
