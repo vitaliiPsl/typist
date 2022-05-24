@@ -96,6 +96,7 @@
 }
 
 .TestTokens {
+    width: 100%;
     padding: 24px 32px;
 
     display: flex;
@@ -104,6 +105,12 @@
 
     background: var(--test-tokens-box-background-color);
     border-radius: 8px;
+}
+
+.TestTokens .tokens-line{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
 }
 
 .Token {
