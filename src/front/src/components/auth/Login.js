@@ -2,12 +2,14 @@ import React from "react";
 import "./Auth.css";
 import authService from "../../services/auth.service";
 import {withRouter} from "../../WithRouter";
+import {MainContext} from "../app/MainContext";
 
 class Login extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
 
-        this.state = {}
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -34,7 +36,7 @@ class Login extends React.Component {
         user.authToken = data.authToken;
 
         authService.saveCurrentUser(user);
-        this.props.setUser(user);
+        this.context.setUser(user);
         this.props.navigate('/')
     }
 

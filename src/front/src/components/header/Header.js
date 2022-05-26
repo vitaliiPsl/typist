@@ -3,20 +3,22 @@ import './Header.css'
 import {NavLink, Router} from "react-router-dom";
 import authService from "../../services/auth.service";
 import {withRouter} from "../../WithRouter";
+import {MainContext} from "../app/MainContext";
 
 class Header extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
 
-        this.handleLogOut = this.handleLogOut.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
-    handleLogOut(e){
+    handleLogout(){
         authService.logout();
-        this.props.removeUser();
+        this.context.removeUser();
 
-        e.preventDefault();
-        this.props.navigate('/');
+        window.location.href = '/';
     }
 
     render() {
@@ -35,7 +37,7 @@ class Header extends React.Component {
                         </NavLink>
                     </div>
 
-                    {!this.props.user &&
+                    {!this.context.user &&
                         <>
                             <div className="menu-item">
                                 <NavLink to={'/login'} className={'menu-link'}>
@@ -50,7 +52,7 @@ class Header extends React.Component {
                         </>
                     }
 
-                    {this.props.user &&
+                    {this.context.user &&
                         <>
                             <div className="menu-item">
                                 <NavLink to={`/user/${this.props.user.id}`} className={'menu-link'}>
@@ -58,7 +60,12 @@ class Header extends React.Component {
                                 </NavLink>
                             </div>
                             <div className="menu-item">
-                                <NavLink onClick={this.handleLogOut} to={`/logout`} className={'menu-link'}>
+                                <NavLink to={`/user/${this.context.user.id}`} className={'menu-link'}>
+                                    <span>{this.context.user.nickname}</span>
+                                </NavLink>
+                            </div>
+                            <div className="menu-item">
+                                <NavLink onClick={this.handleLogout} to={`/logout`} className={'menu-link'}>
                                     <span>Log out</span>
                                 </NavLink>
                             </div>

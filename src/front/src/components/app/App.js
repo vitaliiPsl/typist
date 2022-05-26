@@ -9,27 +9,28 @@ import ErrorsBox from "../errors/ErrorsBox";
 import Profile from "../profile/Profile";
 import authService from "../../services/auth.service";
 import Error404 from "../errorPages/Error404";
+import { MainContext } from "./MainContext";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {user: null, errors: []}
+        let user = authService.loadCurrentUser();
+        this.state = {
+            user: user,
+            setUser: this.setUser,
+            removeUser: this.removeUser,
+            errors: []
+        };
 
-        this.setUser = this.setUser.bind(this);
-        this.addError = this.addError.bind(this);
         this.removeError = this.removeError.bind(this);
     }
 
-    componentDidMount() {
-        this.setState({user: authService.loadCurrentUser()});
-    }
-
-    setUser(user) {
+    setUser = (user) => {
         this.setState({user: user});
     }
 
-    removeUser(){
+    removeUser = () => {
         this.setState({user: null});
     }
 
@@ -49,21 +50,23 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App">
-                <div className="container">
-                    <ErrorsBox errors={this.state.errors} removeError={this.removeError}/>
-                    <Header title={'Typist'} user={this.state.user} removeUser={this.removeUser}/>
-                    <div className="Main">
-                        <Routes>
-                            <Route path={'/'} element={<Test addError={this.state.addError}/>}/>
-                            <Route path={'/login'} element={<Login setUser={this.setUser} addError={this.addError}/>}/>
-                            <Route path={'/signup'} element={<Signup addError={this.addError}/>}/>
-                            <Route path={'/user/:id'} element={<Profile/>}/>
-                            <Route path={'/*'} element={<Error404/>}/>
-                        </Routes>
+            <MainContext.Provider value={this.state}>
+                <div className="App">
+                    <div className="container">
+                        <ErrorsBox errors={this.state.errors} removeError={this.removeError}/>
+                        <Header title={'Typist'}/>
+                        <div className="Main">
+                            <Routes>
+                                <Route path={'/'} element={<Test addError={this.state.addError}/>}/>
+                                <Route path={'/login'} element={<Login addError={this.addError}/>}/>
+                                <Route path={'/signup'} element={<Signup addError={this.addError}/>}/>
+                                <Route path={'/user/:id'} element={<Profile/>}/>
+                                <Route path={'/*'} element={<Error404/>}/>
+                            </Routes>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </MainContext.Provider>
         );
     }
 }
