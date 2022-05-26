@@ -33,6 +33,10 @@ public class TestService {
         return testRepository.findByUser(user);
     }
 
+    public void deleteByUser(User user){
+        testRepository.deleteAllByUser(user);
+    }
+
     public List<Test> getTodayTopTests() {
         LocalDateTime todayMidnight = getTodayMidnight();
 

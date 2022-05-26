@@ -14,5 +14,7 @@ import java.util.List;
 public interface TestRepository extends JpaRepository<Test, Long> {
     List<Test> findByUser(User user);
 
+    void deleteAllByUser(User user);
+
     List<Test> findAllByTestDateBetweenOrderByWpm(LocalDateTime startInterval, LocalDateTime endInterval);
 }

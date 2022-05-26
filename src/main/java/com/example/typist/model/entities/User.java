@@ -35,7 +35,7 @@ public class User {
     @Size(min = 6, message = "Minimal password length - 6 symbols")
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true, cascade = {CascadeType.REMOVE})
     @Fetch(FetchMode.SELECT)
     private Set<Test> tests = new HashSet<>();
 

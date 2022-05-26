@@ -1,5 +1,6 @@
 package com.example.typist.web;
 
+import com.example.typist.model.dto.UserDto;
 import com.example.typist.model.entities.Test;
 import com.example.typist.model.entities.User;
 import com.example.typist.model.errors.EntityNotFoundException;
@@ -35,6 +36,14 @@ public class TestController {
         testService.save(test);
 
         return ResponseEntity.ok().body(test);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteTests(Authentication auth){
+        String email = auth.getName();
+        User user = userService.getByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("User with email '%s' not found", email)));
+
+        testService.deleteByUser(user);
     }
 
     @GetMapping("/top")
