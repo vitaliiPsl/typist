@@ -8,7 +8,7 @@ export default class Error extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(this.removeError, 10000);
+        setInterval(() => this.removeError(), 10000);
     }
 
     removeError(){
@@ -19,7 +19,7 @@ export default class Error extends React.Component {
         return (
             <div className="Error">
                 <h5>{this.props.error}</h5>
-                <div className="close" onClick={this.removeError}>X</div>
+                <div className="close" onClick={this.removeError}/>
             </div>
         );
     }

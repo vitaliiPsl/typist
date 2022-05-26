@@ -2,12 +2,13 @@ import React from "react";
 import "./Auth.css";
 import authService from '../../services/auth.service'
 import {withRouter} from "../../WithRouter";
+import {MainContext} from "../app/MainContext";
 
 class Signup extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
-
-        this.state = {};
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -25,29 +26,13 @@ class Signup extends React.Component {
 
     async signUp(nickname, email, password) {
         let response = await authService.signUp({nickname, email, password});
-        console.log(response);
 
         if(!response.ok){
-            this.handleErrors(response);
+            this.context.handleError(response);
             return;
         }
 
         this.props.navigate('/login');
-    }
-
-    async handleErrors(response){
-        if(response.status === 400){
-            let apiError = await response.json();
-            console.log(apiError);
-
-            if(apiError.subErrors.length === 0){
-                this.props.addError(apiError.message)
-            } else{
-                for(let subError of apiError.subErrors){
-                    this.props.addError(subError.message);
-                }
-            }
-        }
     }
 
     render() {
@@ -60,7 +45,7 @@ class Signup extends React.Component {
                         <input type="text" name="nickname" placeholder="Nickname" autoComplete="off"/>
                     </div>
                     <div className="form-row">
-                        <input type="text" name="email" placeholder="Email" autoComplete="off" required/>
+                        <input type="email" name="email" placeholder="Email" autoComplete="off" required/>
                     </div>
                     <div className="form-row">
                         <input type="password" name="password" placeholder="Password" required/>

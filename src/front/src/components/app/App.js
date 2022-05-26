@@ -9,7 +9,10 @@ import ErrorsBox from "../errors/ErrorsBox";
 import Profile from "../profile/Profile";
 import authService from "../../services/auth.service";
 import Error404 from "../errorPages/Error404";
-import { MainContext } from "./MainContext";
+import {MainContext} from "./MainContext";
+import Settings from "../settings/Settings";
+import Error500 from "../errorPages/Error500";
+import {withRouter} from "../../WithRouter";
 
 class App extends React.Component {
     constructor(props) {
@@ -20,10 +23,9 @@ class App extends React.Component {
             user: user,
             setUser: this.setUser,
             removeUser: this.removeUser,
-            errors: []
+            errors: [],
+            handleError: this.handleApiError,
         };
-
-        this.removeError = this.removeError.bind(this);
     }
 
     setUser = (user) => {
@@ -34,14 +36,35 @@ class App extends React.Component {
         this.setState({user: null});
     }
 
-    addError(error) {
+    handleApiError = async (response) => {
+        if (response.status !== 400 && response.status !== 403 && response.status !== 404) {
+            this.props.navigate('/error/internal');
+            return;
+        }
+
+        if (response.status === 404) {
+            this.props.navigate('/error/notfound');
+            return;
+        }
+
+        let apiError = await response.json();
+        if (apiError.subErrors.length === 0) {
+            this.addError(apiError.message)
+        } else {
+            for (let subError of apiError.subErrors) {
+                this.addError(subError.message);
+            }
+        }
+    }
+
+    addError = (error) => {
         let errors = this.state.errors;
         errors.push(error);
 
         this.setState({errors: errors});
     }
 
-    removeError(index) {
+    removeError = (index) => {
         let errors = this.state.errors;
         errors.splice(index, 1);
 
@@ -57,10 +80,13 @@ class App extends React.Component {
                         <Header title={'Typist'}/>
                         <div className="Main">
                             <Routes>
-                                <Route path={'/'} element={<Test addError={this.state.addError}/>}/>
-                                <Route path={'/login'} element={<Login addError={this.addError}/>}/>
-                                <Route path={'/signup'} element={<Signup addError={this.addError}/>}/>
+                                <Route path={'/'} element={<Test/>}/>
+                                <Route path={'/login'} element={<Login/>}/>
+                                <Route path={'/signup'} element={<Signup/>}/>
+                                <Route path={'/settings'} element={<Settings/>}/>
                                 <Route path={'/user/:id'} element={<Profile/>}/>
+                                <Route path={'/error/internal'} element={<Error500/>}/>
+                                <Route path={'/error/notfound'} element={<Error404/>}/>
                                 <Route path={'/*'} element={<Error404/>}/>
                             </Routes>
                         </div>
@@ -71,4 +97,4 @@ class App extends React.Component {
     }
 }
 
-export default App;
+export default withRouter(App);

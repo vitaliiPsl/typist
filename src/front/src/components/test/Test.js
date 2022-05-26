@@ -8,17 +8,20 @@ import TestResult from "./TestResult";
 import authService from "../../services/auth.service";
 import TestConfiguration from "./TestConfiguration";
 import Ranking from "../rating/Ranking";
+import {MainContext} from "../app/MainContext";
 
 const TEST_STATUS_NOT_STARTED = 'not started';
 const TEST_STATUS_IN_PROGRESS = 'in progress';
 const TEST_STATUS_COMPLETE = 'complete';
 
 export default class Test extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
 
-        let timeOptions = [15, 30, 50, 90];
-        let initTime = 15;
+        let timeOptions = [15, 30, 60, 90];
+        let initTime = 30;
 
         this.state = {
             timeOptions: timeOptions,
@@ -88,16 +91,7 @@ export default class Test extends React.Component {
             let response = await testService.saveTest(result);
 
             if (!response.ok) {
-                this.handleError(response);
-            }
-        }
-    }
-
-    async handleError(response) {
-        if (response.status === 403) {
-            let apiError = await response.json();
-            if (apiError.message) {
-                this.props.addError(apiError.message);
+                this.context.handleError(response);
             }
         }
     }
@@ -122,7 +116,7 @@ export default class Test extends React.Component {
     }
 
     loadText() {
-        return textService.getWords(100);
+        return textService.getWords(400);
     }
 
     buildTokens(text) {

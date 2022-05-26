@@ -5,8 +5,11 @@ import userService from "../../services/user.service";
 import TestsTable from "./TestsTable";
 import TestsChart from "./TestChart";
 import UserInfo from "./UserInfo";
+import {MainContext} from "../app/MainContext";
 
 class Profile extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
 
@@ -24,19 +27,14 @@ class Profile extends React.Component {
 
     async loadUser(id) {
         let response = await userService.loadUser(id);
-        if (response.status !== 200) {
-            this.handleError(response);
+
+        if (!response.ok) {
+            this.context.handleError(response);
             return;
         }
 
         let user = await response.json();
         this.setUser(user);
-    }
-
-
-    handleError(response) {
-        if (response.status === 404)
-            this.props.navigate('/notfound');
     }
 
     render() {
@@ -53,7 +51,7 @@ class Profile extends React.Component {
                         }
                         {!this.state.user.tests.length > 0 &&
                             <div className="no-tests">
-                                <h2>No test to show</h2>
+                                <h2>No tests to show</h2>
                             </div>
                         }
                     </>

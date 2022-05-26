@@ -26,27 +26,17 @@ class Login extends React.Component {
         let response = await authService.login({email, password});
         console.log(response);
         if (!response.ok) {
-            this.handleErrors(response);
+            this.context.handleError(response);
             return;
         }
 
         let data = await response.json();
-
         let user = data.user;
         user.authToken = data.authToken;
 
         authService.saveCurrentUser(user);
         this.context.setUser(user);
         this.props.navigate('/')
-    }
-
-    async handleErrors(response) {
-        if (response.status === 403) {
-            let apiError = await response.json();
-            if (apiError.message) {
-                this.props.addError(apiError.message);
-            }
-        }
     }
 
     render() {

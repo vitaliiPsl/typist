@@ -4,8 +4,11 @@ import Overlay from "../app/Overlay";
 import testService from "../../services/test.service";
 import {withRouter} from "../../WithRouter";
 import RankingTable from "./RankingTable";
+import {MainContext} from "../app/MainContext";
 
 class Ranking extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
 
@@ -38,7 +41,7 @@ class Ranking extends React.Component {
         let response = await testService.loadTodayTests();
 
         if (!response.ok) {
-            // handle errors
+            this.context.handleError(response);
             return;
         }
 
@@ -62,7 +65,6 @@ class Ranking extends React.Component {
                 <Overlay>
                     <div className="Ranking">
                         <div className="close" onClick={this.hideRankingTable}/>
-
                         <h2 className="title">Today ranking</h2>
                         <RankingTable tests={this.state.tests} redirectToUser={this.redirectToUser}/>
                     </div>
