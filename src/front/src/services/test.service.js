@@ -23,6 +23,16 @@ class TestService{
         });
     }
 
+    resetTests(){
+        return fetch(API + 'delete', {
+            method: "delete",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': authHeader()
+            }
+        });
+    }
+
     getTestResult(textTokens, inputTokens, wordsCount, time){
         let statistic = this.getTestStatistic(textTokens, inputTokens, wordsCount);
         console.log(statistic);

@@ -1,6 +1,6 @@
 import React from "react";
 import './Header.css'
-import {NavLink, Router} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import authService from "../../services/auth.service";
 import {withRouter} from "../../WithRouter";
 import {MainContext} from "../app/MainContext";
@@ -55,8 +55,8 @@ class Header extends React.Component {
                     {this.context.user &&
                         <>
                             <div className="menu-item">
-                                <NavLink to={`/user/${this.props.user.id}`} className={'menu-link'}>
-                                    <span>{this.props.user.nickname}</span>
+                                <NavLink to={`/settings`} className={'menu-link'}>
+                                    <span>Settings</span>
                                 </NavLink>
                             </div>
                             <div className="menu-item">

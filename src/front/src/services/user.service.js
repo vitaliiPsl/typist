@@ -11,6 +11,38 @@ class UserService{
             }
         });
     }
+
+    changeNickname(nickname){
+        return fetch(API + 'edit/nickname', {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': authHeader()
+            },
+            body: JSON.stringify({nickname}),
+        });
+    }
+
+    changePassword(oldPassword, newPassword){
+        return fetch(API + 'edit/password', {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': authHeader()
+            },
+            body: JSON.stringify({oldPassword, newPassword}),
+        });
+    }
+
+    deleteAccount(){
+        return fetch(API + 'delete', {
+            method: "delete",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': authHeader()
+            }
+        });
+    }
 }
 
 export default new UserService();
