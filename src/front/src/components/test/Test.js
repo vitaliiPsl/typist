@@ -143,14 +143,18 @@ export default class Test extends React.Component {
         if (input[input.length - 1] !== ' ') {
             this.updateToken(input, token, index);
         } else {
+            this.input.current.value = '';
+
+            if(input.length === 1){
+                return;
+            }
+
             if (input.slice(0, input.length - 1) !== token) {
                 wrongTokens.push(index);
             }
 
             inputTokens.push(input);
             this.setState({wordCount: ++index, inputTokens: inputTokens, wrongTokens: wrongTokens})
-
-            this.input.current.value = '';
         }
     }
 
