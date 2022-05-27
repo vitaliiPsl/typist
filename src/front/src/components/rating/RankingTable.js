@@ -1,6 +1,9 @@
 import React from "react";
+import {MainContext} from "../app/MainContext";
 
 export default class RankingTable extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
     }
@@ -10,9 +13,12 @@ export default class RankingTable extends React.Component {
             return <tr key={index}>{this.getRankingRecord(index)}</tr>
         }
 
-        return <tr key={index} onClick={() => this.props.redirectToUser(test.user.id)}>
-                {this.getRankingRecord(index, test.user.nickname, test.wpm, test.accuracy)}
-            </tr>;
+        let user = this.context.user;
+        let isCurrent = user.id === test.user.id;
+
+        return <tr key={index} onClick={() => this.props.redirectToUser(test.user.id)} className={isCurrent ? 'current' : ''}>
+            {this.getRankingRecord(index, test.user.nickname, test.wpm, test.accuracy)}
+        </tr>;
     }
 
     getRankingRecord(index, nickname='--', wpm='--', accuracy='--') {
