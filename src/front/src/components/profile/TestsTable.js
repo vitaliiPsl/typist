@@ -4,7 +4,7 @@ export default class TestsTable extends React.Component {
     constructor(props) {
         super(props);
 
-        let tests = this.props.tests.sort(this.testSortingComparator);
+        let tests = this.props.tests;
         // number of rows to display in table
         let numberOfRows = 5;
         let increaseNumber = 5;
@@ -13,20 +13,51 @@ export default class TestsTable extends React.Component {
 
         this.getTableRow = this.getTableRow.bind(this);
         this.showMore = this.showMore.bind(this);
-        this.testSortingComparator = this.testSortingComparator.bind(this);
     }
 
-    testSortingComparator(test1, test2) {
-        let date1 = Date.parse(test1.testDate);
-        let date2 = Date.parse(test2.testDate);
+    componentDidMount() {
+        this.sortByDate();
+    }
 
-        if (date1 < date2) {
-            return 1;
-        } else if (date1 > date2) {
-            return -1;
-        } else {
-            return 0;
-        }
+    sortByDate() {
+        let tests = this.state.tests;
+
+        tests.sort((test1, test2) => {
+            let date1 = Date.parse(test1.testDate);
+            let date2 = Date.parse(test2.testDate);
+            return this.testsComparator(date1, date2);
+        });
+
+        this.setState({tests})
+    }
+
+    sortByWpm() {
+        console.log('sort')
+        let tests = this.state.tests;
+
+        tests.sort((test1, test2) => this.testsComparator(test1.wpm, test2.wpm));
+
+        this.setState({tests})
+    }
+
+    sortByTime() {
+        let tests = this.state.tests;
+
+        tests.sort((test1, test2) => this.testsComparator(test1.time, test2.time));
+
+        this.setState({tests})
+    }
+
+    sortByAccuracy() {
+        let tests = this.state.tests;
+
+        tests.sort((test1, test2) => this.testsComparator(test1.accuracy, test2.accuracy));
+
+        this.setState({tests})
+    }
+
+    testsComparator(comparable1, comparable2) {
+        return comparable2 - comparable1;
     }
 
     getTableRow(index, test) {
@@ -38,7 +69,7 @@ export default class TestsTable extends React.Component {
         </tr>
     }
 
-    showMore(){
+    showMore() {
         let numberOfTakenTests = this.state.tests.length;
         let numberOfRows = this.state.numberOfRows;
         numberOfRows += this.state.increaseNumber;
@@ -55,10 +86,10 @@ export default class TestsTable extends React.Component {
                         <table>
                             <thead>
                             <tr>
-                                <td>{"wpm"}</td>
-                                <td>{"accuracy"}</td>
-                                <td>{"time"}</td>
-                                <td>{"date"}</td>
+                                <td onClick={() => this.sortByWpm()}>{"wpm"}</td>
+                                <td onClick={() => this.sortByAccuracy()}>{"accuracy"}</td>
+                                <td onClick={() => this.sortByTime()}>{"time"}</td>
+                                <td onClick={() => this.sortByDate()}>{"date"}</td>
                             </tr>
                             </thead>
                             <tbody>

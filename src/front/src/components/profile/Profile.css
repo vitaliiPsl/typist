@@ -73,6 +73,10 @@
     text-align: center;
 }
 
+.TestsTable thead td{
+    cursor: pointer;
+}
+
 .TestsTable tbody tr:nth-child(odd) {
     background-color: var(--table-second-color);
 }
