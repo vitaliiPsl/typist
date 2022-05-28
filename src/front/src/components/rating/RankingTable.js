@@ -4,10 +4,6 @@ import {MainContext} from "../app/MainContext";
 export default class RankingTable extends React.Component {
     static contextType = MainContext;
 
-    constructor(props) {
-        super(props);
-    }
-
     getTableRow(test, index) {
         if (test === null) {
             return <tr key={index}>{this.getRankingRecord(index)}</tr>

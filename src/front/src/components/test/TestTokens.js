@@ -6,7 +6,7 @@ export default class TestTokens extends React.Component{
         super(props);
 
         this.state = {
-            tokensPerLine: 15,
+            tokensPerLine: 12,
             linesOnScreen: 5,
         }
     }

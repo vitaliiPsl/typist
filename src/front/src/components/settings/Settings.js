@@ -1,8 +1,9 @@
 import React from "react";
 import './Settings.css';
 import UserSettings from "./user/UserSettings";
+import {withRouter} from "../../WithRouter";
 
-export default class Settings extends React.Component{
+class Settings extends React.Component{
     render() {
         return(
             <div className="Settings">
@@ -14,3 +15,5 @@ export default class Settings extends React.Component{
         );
     }
 }
+
+export default withRouter(Settings);
