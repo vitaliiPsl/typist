@@ -10,7 +10,7 @@ export default class RankingTable extends React.Component {
         }
 
         let user = this.context.user;
-        let isCurrent = user.id === test.user.id;
+        let isCurrent = user ? user.id === test.user.id : false;
 
         return <tr key={index} onClick={() => this.props.redirectToUser(test.user.id)} className={isCurrent ? 'current' : ''}>
             {this.getRankingRecord(index, test.user.nickname, test.wpm, test.accuracy)}
