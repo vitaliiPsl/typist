@@ -1,6 +1,6 @@
 import authHeader from "./auth.header";
 
-const API = "http://localhost:8080/api/users/";
+const API = process.env.REACT_APP_API + 'users/';
 
 class UserService{
     loadUser(id){

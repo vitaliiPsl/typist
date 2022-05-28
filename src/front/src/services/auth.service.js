@@ -1,4 +1,4 @@
-const API = "http://localhost:8080/api/auth/";
+const API = process.env.REACT_APP_API + 'auth/';
 
 class AuthService {
     login(loginData) {

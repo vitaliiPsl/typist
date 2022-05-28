@@ -1,6 +1,6 @@
 import authHeader from "./auth.header";
 
-const API = "http://localhost:8080/api/tests/";
+const API = process.env.REACT_APP_API + 'tests/';
 
 class TestService{
     saveTest(test){
