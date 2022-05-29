@@ -4,10 +4,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    position: relative;
 }
 
 .menu-box{
-    width: 50%;
+    width: 60%;
 
     display: flex;
     justify-content: space-evenly;
@@ -28,4 +30,68 @@
 
 .menu-item .menu-link.active{
     background: var(--highlight-color);
+}
+
+.burger-menu{
+    display: none;
+}
+
+.burger-icon{
+    height: 28px;
+    width: 28px;
+
+    background: url("../../icons/menu.png")  no-repeat center;
+    background-size: cover;
+    filter: invert();
+
+    cursor: pointer;
+}
+
+@media screen  and (max-width: 1400px) {
+    .burger-menu{
+        display: block;
+    }
+
+    .burger-icon.open{
+        background: url("../../icons/close.png")  no-repeat center;
+        background-size: 90%;
+    }
+
+    .menu-box{
+        display: none;
+
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+
+        width: 100%;
+        padding: 8px 0;
+
+        background: var(--background-color);
+        border-bottom: 1px solid var(--main-color);
+    }
+
+    .menu-box.open{
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .menu-item{
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+    }
+
+    .menu-item:hover{
+        letter-spacing: 2px;
+    }
+
+    .menu-link{
+        width: 100%;
+        padding: 8px 0;
+        text-align: center;
+    }
 }

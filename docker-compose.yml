@@ -1,0 +1,29 @@
+version: '2'
+services:
+  backend:
+    build: .
+    image: typist_backend
+    container_name: typist_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_URI: jdbc:postgresql://db:5432/postgres
+      DB_USERNAME: dev
+      DB_PASSWORD: dev123
+  frontend:
+    build: ./src/front
+    image: typist_frontend
+    container_name: typist_frontend
+    depends_on:
+      - backend
+    environment:
+      REACT_APP_API: http://backend:8080/api/
+
+  db:
+    image: postgres:alpine
+    container_name: dbclr
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev123

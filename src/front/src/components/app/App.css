@@ -98,3 +98,9 @@ form {
     background: #000000be;
     z-index: 1000;
 }
+
+@media screen  and (max-width: 1400px) {
+    .container{
+        padding: 0 64px;
+    }
+}

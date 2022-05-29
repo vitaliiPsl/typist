@@ -11,6 +11,11 @@ class Header extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            open: false,
+        }
+
+        this.toggleOpen = this.toggleOpen.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
 
@@ -19,6 +24,10 @@ class Header extends React.Component {
         this.context.removeUser();
 
         window.location.href = '/';
+    }
+
+    toggleOpen(){
+        this.setState({open: !this.state.open})
     }
 
     render() {
@@ -30,7 +39,7 @@ class Header extends React.Component {
                     </NavLink>
                 </div>
 
-                <div className="menu-box">
+                <div className={this.state.open ? 'menu-box open' : 'menu-box'}>
                     <div className="menu-item home">
                         <NavLink to={'/'} className={'menu-link'}>
                             <span>Home</span>
@@ -71,6 +80,9 @@ class Header extends React.Component {
                             </div>
                         </>
                     }
+                </div>
+                <div className="burger-menu" onClick={this.toggleOpen}>
+                    <div className={this.state.open ? 'burger-icon open' : 'burger-icon'}></div>
                 </div>
             </div>
         );

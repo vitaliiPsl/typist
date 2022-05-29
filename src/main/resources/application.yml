@@ -1,8 +1,12 @@
+
 spring:
   datasource:
-    url: jdbc:h2:mem:typist;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: ${DB_URI}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
-    database: h2
+    database: POSTGRESQL
     hibernate:
       ddl-auto: update
-    show-sql: true
+server:
+  port: ${PORT}

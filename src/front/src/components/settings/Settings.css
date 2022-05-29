@@ -40,7 +40,7 @@
 }
 
 .option-action{
-    min-width: 20%;
+    min-width: 180px;
 }
 
 .option-action *{
@@ -64,4 +64,11 @@
 
 .modal > *{
     width: 100%;
+}
+
+@media screen  and (max-width: 680px) {
+    .settings-option-row{
+        flex-direction: column;
+        gap: 8px;
+    }
 }
