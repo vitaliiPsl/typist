@@ -11,6 +11,37 @@ export default class TestTokens extends React.Component{
         }
     }
 
+    componentDidMount() {
+        window.addEventListener('resize', () => this.windowResize());
+        setTimeout(() => this.windowResize(), 0);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        this.windowResize();
+    }
+
+    windowResize(){
+        let testTokens = document.querySelector('.TestTokens');
+        let tokensBoxWidth = testTokens.offsetWidth;
+
+        let tokensWrapper = document.querySelector('.tokens-wrapper');
+        let tokensWrapperWidth = tokensWrapper.offsetWidth;
+
+        console.log(testTokens);
+        console.log(tokensWrapper);
+        console.log(tokensBoxWidth);
+        console.log(tokensWrapper.clientWidth);
+
+        let tokensBoxPadding = 32;
+        let averWordLength = 150;
+
+        if(tokensWrapperWidth >= tokensBoxWidth - tokensBoxPadding) {
+            this.setState({tokensPerLine: this.state.tokensPerLine - 1});
+        } else if(tokensBoxWidth - tokensWrapperWidth > averWordLength){
+            this.setState({tokensPerLine: this.state.tokensPerLine + 1});
+        }
+    }
+
     getTokenLines(){
         let tokens = this.props.tokens;
         let currentToken = this.props.current;
@@ -52,9 +83,11 @@ export default class TestTokens extends React.Component{
     render(){
         return(
             <div className="TestTokens">
-                {
-                    this.getTokenLines().map((line, index) => <div className="tokens-line" key={index}>{line}</div>)
-                }
+                <div className="tokens-wrapper">
+                    {
+                        this.getTokenLines().map((line, index) => <div className="tokens-line" key={index}>{line}</div>)
+                    }
+                </div>
             </div>
         );
     }

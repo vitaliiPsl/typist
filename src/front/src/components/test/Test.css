@@ -53,6 +53,7 @@
 
 .control-row input {
     width: 90%;
+    height: 44px;
     padding: 8px 16px;
 
     font-size: 16px;
@@ -62,10 +63,26 @@
 
 .control-row button {
     width: 10%;
-    padding: 8px 16px;
+    height: 44px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     font-size: 16px;
+    border: 2px solid var(--main-color);
     border-radius: 0 8px 8px 0;
+
+    background: url("../../icons/restart.svg")  no-repeat center;
+    background-size: 30%;
+    transition: 1s;
+
+    cursor: pointer;
+}
+
+.control-row button:focus{
+
 }
 
 .TestConfiguration{
@@ -100,6 +117,7 @@
     padding: 24px 32px;
 
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 4px;
 
@@ -141,4 +159,14 @@
 
 .Symbol.excessive {
     color: var(--test-symbol-excessive-color);
+}
+
+@media screen and (max-width: 600px) {
+    .control-row input{
+        width: 80%;
+    }
+
+    .control-row button{
+        width: 20%;
+    }
 }

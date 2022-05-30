@@ -145,7 +145,7 @@ export default class Test extends React.Component {
         } else {
             this.input.current.value = '';
 
-            if(input.length === 1){
+            if (input.length === 1) {
                 return;
             }
 
@@ -193,7 +193,8 @@ export default class Test extends React.Component {
                 <Ranking/>
 
                 {this.state.status !== TEST_STATUS_IN_PROGRESS &&
-                    <TestConfiguration timeOptions={this.state.timeOptions} time={this.state.initTime} setTime={this.setTime}/>
+                    <TestConfiguration timeOptions={this.state.timeOptions} time={this.state.initTime}
+                                       setTime={this.setTime}/>
                 }
 
                 {this.state.status === TEST_STATUS_COMPLETE &&
@@ -203,11 +204,19 @@ export default class Test extends React.Component {
                 <div className="test-timer">{this.state.time}</div>
 
                 <div className="control-row">
-                    <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput} tabIndex={1}/>
-                    <button className={'restart-btn'} onClick={this.restart} tabIndex={2}>Restart</button>
+                    {this.state.status === TEST_STATUS_COMPLETE &&
+                        <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput}
+                               tabIndex={1} disabled/>
+                    }
+                    {this.state.status !== TEST_STATUS_COMPLETE &&
+                        <input type="text" className={'test-input'} ref={this.input} onChange={this.handleInput}
+                               tabIndex={1}/>
+                    }
+                    <button className={'restart-btn'} onClick={this.restart} tabIndex={2}></button>
                 </div>
 
-                <TestTokens tokens={this.state.tokens} current={this.state.wordCount} wrongTokens={this.state.wrongTokens}/>
+                <TestTokens tokens={this.state.tokens} current={this.state.wordCount}
+                            wrongTokens={this.state.wrongTokens}/>
             </div>
         );
     }
