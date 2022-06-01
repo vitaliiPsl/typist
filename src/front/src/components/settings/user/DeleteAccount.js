@@ -3,8 +3,10 @@ import userService from "../../../services/user.service";
 import authService from "../../../services/auth.service";
 import Modal from "../../modal/Modal";
 import {MainContext} from "../../app/MainContext";
+import {withRouter} from "../../../WithRouter";
 
-export default class DeleteAccount extends React.Component {
+
+class DeleteAccount extends React.Component {
     static contextType = MainContext;
 
     constructor(props) {
@@ -39,7 +41,10 @@ export default class DeleteAccount extends React.Component {
         }
 
         authService.logout();
+        this.context.setUser(null);
         this.hideModal();
+
+        this.props.navigate('/');
     }
 
     render() {
@@ -67,3 +72,5 @@ export default class DeleteAccount extends React.Component {
         );
     }
 }
+
+export default withRouter(DeleteAccount);
