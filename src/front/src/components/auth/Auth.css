@@ -30,3 +30,9 @@
 .avatar-block input{
     display: none;
 }
+
+@media screen and (max-width: 800px) {
+    form{
+        width: 80%;
+    }
+}
