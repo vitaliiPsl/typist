@@ -12,6 +12,11 @@ class UserService{
         });
     }
 
+    // this method converts string representation of bytes array into blob and then builds image url from that blob
+    getImageUrl(image){
+        return fetch("data:image/*;base64," + image).then(response => response.blob().then(blob => URL.createObjectURL(blob)));
+    }
+
     changeNickname(nickname){
         return fetch(API + 'edit/nickname', {
             method: "post",

@@ -9,3 +9,24 @@
     justify-content: center;
     gap: 24px;
 }
+
+.avatar-block .image-wrapper{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    border: 1px solid var(--main-color);
+
+    background: var(--main-color);
+}
+
+.avatar-block img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.avatar-block input{
+    display: none;
+}

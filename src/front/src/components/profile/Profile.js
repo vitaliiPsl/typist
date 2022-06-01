@@ -34,6 +34,8 @@ class Profile extends React.Component {
         }
 
         let user = await response.json();
+        user.image = await userService.getImageUrl(user.image);
+
         this.setUser(user);
     }
 

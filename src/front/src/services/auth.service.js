@@ -11,13 +11,17 @@ class AuthService {
         });
     }
 
-    signUp(signUpData){
+    signUp(nickname, email, password, image){
+        let formData = new FormData();
+
+        formData.append('nickname', nickname);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('image', image);
+
         return fetch(API + 'signup', {
             method: 'post',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(signUpData)
+            body: formData
         });
     }
 
