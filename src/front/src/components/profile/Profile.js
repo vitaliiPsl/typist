@@ -18,6 +18,7 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
+        this.context.setLoading(true);
         this.loadUser(this.state.id);
     }
 
@@ -37,6 +38,7 @@ class Profile extends React.Component {
         user.image = await userService.getImageUrl(user.image);
 
         this.setUser(user);
+        this.context.setLoading(false);
     }
 
     render() {

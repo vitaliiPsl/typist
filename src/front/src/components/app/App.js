@@ -13,6 +13,7 @@ import {MainContext} from "./MainContext";
 import Settings from "../settings/Settings";
 import Error500 from "../errorPages/Error500";
 import {withRouter} from "../../WithRouter";
+import LoadingAnimation from "./LoadingAnimation";
 
 class App extends React.Component {
     constructor(props) {
@@ -25,6 +26,8 @@ class App extends React.Component {
             removeUser: this.removeUser,
             errors: [],
             handleError: this.handleApiError,
+            isLoading: false,
+            setLoading: this.setLoading,
         };
     }
 
@@ -71,6 +74,10 @@ class App extends React.Component {
         this.setState({errors: errors});
     }
 
+    setLoading = (isLoading) => {
+        this.setState({isLoading});
+    }
+
     render() {
         return (
             <MainContext.Provider value={this.state}>
@@ -78,6 +85,11 @@ class App extends React.Component {
                     <div className="container">
                         <ErrorsBox errors={this.state.errors} removeError={this.removeError}/>
                         <Header title={'Typist'}/>
+
+                        {this.state.isLoading &&
+                            <LoadingAnimation/>
+                        }
+
                         <div className="Main">
                             <Routes>
                                 <Route path={'/'} element={<Test/>}/>

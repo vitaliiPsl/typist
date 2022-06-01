@@ -14,6 +14,8 @@ class Login extends React.Component {
     }
 
     handleSubmit(e) {
+        this.context.setLoading(true);
+
         e.preventDefault();
         let form = e.target;
         let email = form.email.value;
@@ -24,9 +26,10 @@ class Login extends React.Component {
 
     async logIn(email, password) {
         let response = await authService.login({email, password});
-        console.log(response);
+
         if (!response.ok) {
             this.context.handleError(response);
+            this.context.setLoading(false);
             return;
         }
 
@@ -36,6 +39,7 @@ class Login extends React.Component {
 
         authService.saveCurrentUser(user);
         this.context.setUser(user);
+        this.context.setLoading(false);
         this.props.navigate('/')
     }
 

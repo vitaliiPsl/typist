@@ -1,4 +1,5 @@
 import React from "react";
+import './LoadingAnimation.css';
 
 export default class LoadingAnimation extends React.Component{
     render(){
@@ -9,9 +10,9 @@ export default class LoadingAnimation extends React.Component{
                 </div>
 
                 <div className="loading-box">
-                    <h2 className={"loading-text"}>
+                    <span className={"loading-text"}>
                         Loading...
-                    </h2>
+                    </span>
                 </div>
             </div>
         );

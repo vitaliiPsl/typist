@@ -28,6 +28,7 @@ class Signup extends React.Component {
     }
 
     handleSubmit(e) {
+        this.context.setLoading(true);
         e.preventDefault();
 
         let form = e.target;
@@ -44,14 +45,15 @@ class Signup extends React.Component {
 
         if(!response.ok){
             this.context.handleError(response);
+            this.context.setLoading(false);
             return;
         }
 
+        this.context.setLoading(false);
         this.props.navigate('/login');
     }
 
     previewProfileImage(uploader, profileImage) {
-        console.log("here");
         if (uploader.files && uploader.files[0]) {
             let imageFile = uploader.files[0];
             let reader = new FileReader();
