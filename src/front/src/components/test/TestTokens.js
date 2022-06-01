@@ -12,25 +12,22 @@ export default class TestTokens extends React.Component{
     }
 
     componentDidMount() {
-        window.addEventListener('resize', () => this.windowResize());
-        setTimeout(() => this.windowResize(), 0);
+        window.addEventListener('resize', () => this.adjustNumberOfTokens());
+        setTimeout(() => this.adjustNumberOfTokens(), 0);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.windowResize();
+        this.adjustNumberOfTokens();
     }
 
-    windowResize(){
+    adjustNumberOfTokens(){
         let testTokens = document.querySelector('.TestTokens');
-        let tokensBoxWidth = testTokens.offsetWidth;
-
         let tokensWrapper = document.querySelector('.tokens-wrapper');
-        let tokensWrapperWidth = tokensWrapper.offsetWidth;
 
-        console.log(testTokens);
-        console.log(tokensWrapper);
-        console.log(tokensBoxWidth);
-        console.log(tokensWrapper.clientWidth);
+        if(!testTokens || !tokensWrapper) return;
+
+        let tokensBoxWidth = testTokens.offsetWidth;
+        let tokensWrapperWidth = tokensWrapper.offsetWidth;
 
         let tokensBoxPadding = 32;
         let averWordLength = 150;

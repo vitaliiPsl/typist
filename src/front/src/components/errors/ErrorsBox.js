@@ -5,12 +5,12 @@ import './Errors.css'
 export default class ErrorsBox extends React.Component {
 
     render() {
-        return (
-            <div className="ErrorsBox">
+        if (this.props.errors.length > 0) {
+            return <div className="ErrorsBox">
                 {this.props.errors.map((error, index) => {
-                   return <Error key={index} error={error} index={index} removeError={this.props.removeError}/>
+                    return <Error key={index} error={error} index={index} removeError={this.props.removeError}/>
                 })}
             </div>
-        );
+        }
     }
 }
