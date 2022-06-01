@@ -10,5 +10,5 @@ RUN npm run build
 
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
-COPY default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY default.conf /etc/nginx/conf.d/default.conf
 CMD ["nginx", "-g", "daemon off;"]

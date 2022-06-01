@@ -9,13 +9,22 @@ services:
     depends_on:
       - db
     environment:
+      PORT: 8080
       DB_URI: jdbc:postgresql://db:5432/postgres
       DB_USERNAME: dev
       DB_PASSWORD: dev123
+      S3_ACCESS_KEY: access_key
+      S3_SECRET_KEY: secret_key
+      S3_BUCKET: bucket
+      S3_REGION: region
+      S3_DEFAULT_USER_IMAGE: default
+
   frontend:
     build: ./src/front
     image: typist_frontend
     container_name: typist_frontend
+    ports:
+      - "4000:80"
     depends_on:
       - backend
     environment:
@@ -23,7 +32,7 @@ services:
 
   db:
     image: postgres:alpine
-    container_name: dbclr
+    container_name: db
     environment:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: dev123
