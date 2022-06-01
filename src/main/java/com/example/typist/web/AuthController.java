@@ -6,6 +6,7 @@ import com.example.typist.model.dto.UserDto;
 import com.example.typist.model.entities.User;
 import com.example.typist.model.errors.ApiError;
 import com.example.typist.model.errors.EntityNotFoundException;
+import com.example.typist.service.AwsImageService;
 import com.example.typist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,11 +27,13 @@ import java.util.Optional;
 @RequestMapping("api/auth")
 public class AuthController {
     private final UserService userService;
+    private final AwsImageService imageService;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
+    public AuthController(UserService userService, AwsImageService imageService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.imageService = imageService;
         this.authenticationManager = authenticationManager;
     }
 
@@ -51,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup(@Valid @RequestBody User user) {
+    public ResponseEntity<Object> signup(@Valid User user, @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         Optional<User> existing = userService.getByEmail(user.getEmail());
 
         if(existing.isPresent()) {
@@ -61,7 +66,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
         }
 
+        String imageName = imageService.saveImage(image);
+        user.setImageName(imageName);
         user = userService.saveUser(user);
+
         UserDto userDto = new UserDto(user);
 
         return ResponseEntity.ok().body(userDto);

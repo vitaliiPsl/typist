@@ -9,6 +9,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
@@ -22,12 +23,10 @@ public class User {
     @Id
     @GeneratedValue
     private long id;
-
     @Column(name = "nickname")
     private String nickname;
-
     @Column(name = "email", unique = true)
-    @NotNull
+    @NotBlank(message = "You have to provide email")
     @Email(message = "Invalid email format")
     private String email;
 
@@ -35,6 +34,8 @@ public class User {
     @Size(min = 6, message = "Minimal password length - 6 symbols")
     private String password;
 
+    @Column(name = "image")
+    private String imageName;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true, cascade = {CascadeType.REMOVE})
     @Fetch(FetchMode.SELECT)
     private Set<Test> tests = new HashSet<>();

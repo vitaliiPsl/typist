@@ -6,6 +6,7 @@ import com.example.typist.model.dto.UserDto;
 import com.example.typist.model.entities.User;
 import com.example.typist.model.errors.EntityNotFoundException;
 import com.example.typist.model.errors.InvalidRequestArgumentException;
+import com.example.typist.service.AwsImageService;
 import com.example.typist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,24 +15,32 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final AwsImageService imageService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, AwsImageService imageService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.imageService = imageService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("id") long userId) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") long userId) throws IOException {
         User user = userService.getById(userId).orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d not found", userId)));
+
+        byte[] image = imageService.loadImage(user.getImageName());
+
         UserDto userDto = new UserDto(user);
+        userDto.setImage(image);
 
         return ResponseEntity.ok().body(userDto);
     }

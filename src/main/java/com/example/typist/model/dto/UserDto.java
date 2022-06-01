@@ -3,6 +3,7 @@ package com.example.typist.model.dto;
 import com.example.typist.model.entities.Test;
 import com.example.typist.model.entities.User;
 import lombok.Data;
+import org.springframework.core.io.Resource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +14,8 @@ public class UserDto {
     private String username;
     private String nickname;
     private Set<Test> tests = new HashSet<>();
+
+    byte[] image;
 
     public UserDto(User user){
         this.id = user.getId();
