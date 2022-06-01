@@ -3,6 +3,7 @@ package com.example.typist.web;
 import com.example.typist.model.errors.ApiError;
 import com.example.typist.model.errors.EntityNotFoundException;
 import com.example.typist.model.errors.InvalidRequestArgumentException;
+import com.example.typist.model.errors.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,6 +32,11 @@ public class ExceptionHandlerController {
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e) {
         return buildResponseEntity(new ApiError(HttpStatus.NOT_FOUND, e.getMessage(), e));
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException e){
+        return buildResponseEntity(new ApiError(BAD_REQUEST, e.getMessage(), e));
     }
 
     @ExceptionHandler(InvalidRequestArgumentException.class)

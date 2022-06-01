@@ -4,12 +4,11 @@ import com.example.typist.config.security.AuthenticationRequest;
 import com.example.typist.config.security.jwt.JwtUtils;
 import com.example.typist.model.dto.UserDto;
 import com.example.typist.model.entities.User;
-import com.example.typist.model.errors.ApiError;
 import com.example.typist.model.errors.EntityNotFoundException;
+import com.example.typist.model.errors.UserAlreadyExistsException;
 import com.example.typist.service.AwsImageService;
 import com.example.typist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,13 +56,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@Valid User user, @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
-        Optional<User> existing = userService.getByEmail(user.getEmail());
+        String email = user.getEmail();
+        Optional<User> existing = userService.getByEmail(email);
 
         if(existing.isPresent()) {
-            ApiError apiError = new ApiError();
-            apiError.setStatus(HttpStatus.BAD_REQUEST);
-            apiError.setMessage("User already exists");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+            throw new UserAlreadyExistsException(String.format("User with email: '%s' already exists", email));
         }
 
         String imageName = imageService.saveImage(image);
