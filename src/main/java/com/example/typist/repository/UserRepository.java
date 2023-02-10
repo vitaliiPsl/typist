@@ -1,6 +1,6 @@
-package com.example.typist.persistence;
+package com.example.typist.repository;
 
-import com.example.typist.model.entities.User;
+import com.example.typist.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +11,6 @@ import java.util.Optional;
 @Transactional
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByNickname(String nickname);
 }
