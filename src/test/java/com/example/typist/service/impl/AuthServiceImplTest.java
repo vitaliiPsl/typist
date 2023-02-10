@@ -75,7 +75,6 @@ class AuthServiceImplTest {
         verify(userRepository).findByNickname(userDto.getNickname());
         verify(passwordEncoder).encode(userDto.getPassword());
         verify(userRepository).save(Mockito.any(User.class));
-        verify(mapper).map(any(User.class), Mockito.eq(UserDto.class));
 
         assertThat(response.getNickname(), is(userDto.getNickname()));
         assertThat(response.getEmail(), is(userDto.getEmail()));
@@ -154,5 +153,58 @@ class AuthServiceImplTest {
         // then
         assertThrows(BadCredentialsException.class, () -> authService.signIn(request));
         verify(authManager).authenticate(auth);
+    }
+
+
+    @Test
+    void givenExchangeToken_whenTokenIsValidAndUserExist_thenReturnUserAuthentication() {
+        // given
+        String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
+
+        Long userId = 1234L;
+        User user = User.builder().id(userId).email("j.doe@mail.com").build();
+
+        // when
+        when(jwtService.decodeToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        Authentication res = authService.exchangeToken(token);
+
+        // then
+        verify(jwtService).decodeToken(token);
+        verify(userRepository).findById(userId);
+
+        assertThat((User)res.getPrincipal(), is(user));
+        assertThat((String)res.getCredentials(), is(token));
+    }
+
+    @Test
+    void givenExchangeToken_whenUserDoesntExist_thenThrowException() {
+        // given
+        String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
+
+        Long userId = 1234L;
+
+        // when
+        when(jwtService.decodeToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(RuntimeException.class, () -> authService.exchangeToken(token));
+        verify(jwtService).decodeToken(token);
+        verify(userRepository).findById(userId);
+    }
+
+    @Test
+    void givenExchangeToken_whenTokenIsInvalid_thenThrowException() {
+        // given
+        String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
+
+        // when
+        when(jwtService.decodeToken(token)).thenThrow(new RuntimeException());
+
+        // then
+        assertThrows(RuntimeException.class, () -> authService.exchangeToken(token));
+        verify(jwtService).decodeToken(token);
     }
 }
