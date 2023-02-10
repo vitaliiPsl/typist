@@ -3,7 +3,10 @@ package com.example.typist.service.impl;
 import com.example.typist.exception.ResourceAlreadyExistException;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
+import com.example.typist.payload.auth.SignInRequest;
+import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.repository.UserRepository;
+import com.example.typist.service.JwtService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +15,10 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -30,7 +37,13 @@ class AuthServiceImplTest {
     UserRepository userRepository;
 
     @Mock
+    JwtService jwtService;
+
+    @Mock
     PasswordEncoder passwordEncoder;
+
+    @Mock
+    AuthenticationManager authManager;
 
     @Spy
     ModelMapper mapper;
@@ -96,5 +109,50 @@ class AuthServiceImplTest {
         // then
         assertThrows(ResourceAlreadyExistException.class, () -> authService.signUp(userDto));
         verify(userRepository).findByEmail(userDto.getEmail());
+    }
+
+    @Test
+    void givenSignIn_whenCredentialsAreValid_thenGenerateJwt() {
+        // given
+        String email = "j.doe@mail.com";
+        String password = "password";
+        String jwt = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
+
+        SignInRequest request = SignInRequest.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(email, password);
+
+        // when
+        when(authManager.authenticate(auth)).thenReturn(auth);
+        when(jwtService.createToken(auth)).thenReturn(jwt);
+
+        SignInResponse response = authService.signIn(request);
+
+        // then
+        verify(authManager).authenticate(auth);
+        verify(jwtService).createToken(auth);
+
+        assertThat(response.getToken(), is(jwt));
+    }
+
+    @Test
+    void givenSignIn_whenCredentialsAreInvalid_thenThrowException() {
+        // given
+        String email = "j.doe@mail.com";
+        String password = "password";
+
+        SignInRequest request = SignInRequest.builder().email(email).password(password).build();
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(email, password);
+
+        // when
+        when(authManager.authenticate(auth)).thenThrow(new BadCredentialsException("Invalid password"));
+
+        // then
+        assertThrows(BadCredentialsException.class, () -> authService.signIn(request));
+        verify(authManager).authenticate(auth);
     }
 }

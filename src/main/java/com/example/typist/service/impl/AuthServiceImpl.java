@@ -3,11 +3,17 @@ package com.example.typist.service.impl;
 import com.example.typist.exception.ResourceAlreadyExistException;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
+import com.example.typist.payload.auth.SignInRequest;
+import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.AuthService;
+import com.example.typist.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +27,9 @@ import java.util.Optional;
 @Transactional
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authManager;
     private final ModelMapper mapper;
 
     @Override
@@ -47,6 +55,17 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return mapUserToUserDto(user);
+    }
+
+    @Override
+    public SignInResponse signIn(SignInRequest request) {
+        log.debug("Authenticate user: {}", request.getEmail());
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+        authentication = authManager.authenticate(authentication);
+
+        String token = jwtService.createToken(authentication);
+        return new SignInResponse(token);
     }
 
     private User createUser(UserDto userDto) {
