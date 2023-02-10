@@ -21,5 +21,5 @@ public interface JwtService {
      * @param token jwt token
      * @return id of the subject user
      */
-    String decodeToken(String token);
+    Long decodeToken(String token);
 }
