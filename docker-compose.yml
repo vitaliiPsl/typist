@@ -20,7 +20,7 @@ services:
       S3_DEFAULT_USER_IMAGE: default
 
   frontend:
-    build: ./src/front
+    build: frontend/front
     image: typist_frontend
     container_name: typist_frontend
     ports:

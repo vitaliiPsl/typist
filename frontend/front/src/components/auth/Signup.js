@@ -3,7 +3,7 @@ import "./Auth.css";
 import authService from '../../services/auth.service'
 import {withRouter} from "../../WithRouter";
 import {MainContext} from "../app/MainContext";
-import defaultUserImage from './../../icons/user.png';
+import defaultUserImage from '../../icons/user.png';
 
 class Signup extends React.Component {
     static contextType = MainContext;

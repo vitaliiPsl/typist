@@ -12,6 +12,7 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 10MB
       max-request-size: 15MB
+
 server:
   port: ${PORT:8080}
 
@@ -24,3 +25,7 @@ words:
   path: words
   min-count-per-request: 1
   max-count-per-request: 1000
+
+image-store:
+  upload-path: images
+  allowed-extensions-regex: jpg|jpeg|png|bmp
