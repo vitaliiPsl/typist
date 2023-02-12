@@ -1,8 +1,6 @@
 package com.example.typist.service.impl;
 
-import com.example.typist.model.User;
 import com.example.typist.repository.UserRepository;
-import com.example.typist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
