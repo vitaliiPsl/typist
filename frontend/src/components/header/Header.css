@@ -40,7 +40,7 @@
     height: 28px;
     width: 28px;
 
-    background: url("src/icons/menu.png")  no-repeat center;
+    background: url("../../icons/menu.png")  no-repeat center;
     background-size: cover;
     filter: invert();
 
@@ -53,7 +53,7 @@
     }
 
     .burger-icon.open{
-        background: url("src/icons/close.png")  no-repeat center;
+        background: url("../../icons/close.png")  no-repeat center;
         background-size: 90%;
     }
 
