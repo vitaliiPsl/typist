@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +38,15 @@ public class TestServiceImpl implements TestService {
 
         test = testRepository.save(test);
         return mapTestToTestDto(test);
+    }
+
+    @Override
+    public List<TestDto> getTestsByUseId(Long userId) {
+        log.debug("Get test by id of the user: {}", userId);
+
+        List<Test> tests = testRepository.findByUser_Id(userId);
+
+        return tests.stream().map(this::mapTestToTestDto).collect(Collectors.toList());
     }
 
     private TestDto mapTestToTestDto(Test test) {

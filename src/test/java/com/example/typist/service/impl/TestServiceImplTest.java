@@ -4,12 +4,15 @@ import com.example.typist.model.Test;
 import com.example.typist.model.User;
 import com.example.typist.payload.TestDto;
 import com.example.typist.repository.TestRepository;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -42,10 +45,28 @@ class TestServiceImplTest {
 
         // then
         verify(testRepository).save(any(Test.class));
-        assertThat(res.getWpm(), org.hamcrest.Matchers.is(testDto.getWpm()));
-        assertThat(res.getRawWpm(), org.hamcrest.Matchers.is(testDto.getRawWpm()));
-        assertThat(res.getAccuracy(), org.hamcrest.Matchers.is(testDto.getAccuracy()));
-        assertThat(res.getDuration(), org.hamcrest.Matchers.is(testDto.getDuration()));
+        assertThat(res.getWpm(), Matchers.is(testDto.getWpm()));
+        assertThat(res.getRawWpm(), Matchers.is(testDto.getRawWpm()));
+        assertThat(res.getAccuracy(), Matchers.is(testDto.getAccuracy()));
+        assertThat(res.getDuration(), Matchers.is(testDto.getDuration()));
     }
 
+    @org.junit.jupiter.api.Test
+    void whenGetTestsByUserId_givenTestExist_thenReturnTests() {
+        // given
+        long userId = 4;
+
+        List<Test> tests = List.of(
+                Test.builder().wpm(60).build(),
+                Test.builder().wpm(80).build()
+        );
+
+        // when
+        when(testRepository.findByUser_Id(userId)).thenReturn(tests);
+        List<TestDto> res = testService.getTestsByUseId(userId);
+
+        // then
+        verify(testRepository).findByUser_Id(userId);
+        assertThat(res, Matchers.hasSize(2));
+    }
 }

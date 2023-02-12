@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @CrossOrigin
@@ -19,5 +20,10 @@ public class TestController {
     @PostMapping
     public TestDto saveTest(@Valid @RequestBody TestDto testDto, @AuthenticationPrincipal User actor) {
         return testService.saveTest(testDto, actor);
+    }
+
+    @GetMapping
+    public List<TestDto> getTests(@RequestParam(name = "userId") long userId) {
+        return testService.getTestsByUseId(userId);
     }
 }
