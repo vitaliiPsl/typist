@@ -5,8 +5,8 @@ export const TOKEN_KEY = 'token'
 const token = localStorage.getItem(TOKEN_KEY)
 
 const initialState = {
-	user,
-	token,
+	user: null,
+	token: token,
 }
 
 export const authSlice = createSlice({
