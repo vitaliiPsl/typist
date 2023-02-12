@@ -44,6 +44,8 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
         String token = authorization.replace("Bearer ", "");
         try {
             Authentication authentication = authService.exchangeToken(token);
+            authentication.setAuthenticated(true);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(req, res);

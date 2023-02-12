@@ -37,9 +37,6 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
-    private Set<Test> tests = new HashSet<>();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
