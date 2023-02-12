@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private String image;
+    private String avatar;
 
     private LocalDateTime createdAt;
 
