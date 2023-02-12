@@ -16,8 +16,9 @@ public class TextController {
 
     @GetMapping
     public TextDto getTestText(
-            @RequestParam(value = "count", defaultValue = "300") int count
+            @RequestParam(value = "count", defaultValue = "300") int count,
+            @RequestParam(value = "language", defaultValue = "english") String language
     ) {
-        return textService.getRandomWords(count);
+        return textService.getRandomWords(count, language);
     }
 }
