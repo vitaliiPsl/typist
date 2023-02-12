@@ -9,8 +9,9 @@ public interface TextService {
 
     /**
      * Get list of random words
-     * @param count number of words to return
+     * @param count number of words
+     * @param language selected language
      * @return WordsDto containing list of random words
      */
-    TextDto getRandomWords(int count);
+    TextDto getRandomWords(int count, String language);
 }

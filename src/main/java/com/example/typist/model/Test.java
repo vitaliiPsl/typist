@@ -22,9 +22,11 @@ public class Test {
 
     private int wpm;
 
+    private int rawWpm;
+
     private int accuracy;
 
-    private int time;
+    private int duration;
 
     private LocalDateTime timestamp;
 

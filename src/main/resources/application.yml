@@ -19,3 +19,8 @@ security:
   jwt:
     secret: jwt.super.secret.key
     token-expiration-time-min: 10080
+
+words:
+  path: words
+  min-count-per-request: 1
+  max-count-per-request: 1000
