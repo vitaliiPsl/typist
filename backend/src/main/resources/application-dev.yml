@@ -1,7 +1,11 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:default
-
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: root
+      password: root
+      database: typist
 logging:
   level:
     com.example.typist: DEBUG
