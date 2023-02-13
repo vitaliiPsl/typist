@@ -21,7 +21,7 @@ const TextField = ({
 				required={required}
 				autoComplete={autoComplete}
 				ref={reference}
-				className={`field ${inputClassName} py-2 px-4 text-base text-txPrimary bg-bgPrimary border-2 border-txPrimary rounded-lg duration-500 focus:outline-none focus:text-bgPrimary focus:bg-txPrimary`}
+				className={`field ${inputClassName} min-h-11 w-full py-2 px-4 text-base text-txPrimary bg-bgPrimary border-2 border-txPrimary rounded-lg duration-500 focus:outline-none focus:text-bgPrimary focus:bg-txPrimary`}
 			/>
 		</div>
 	)
