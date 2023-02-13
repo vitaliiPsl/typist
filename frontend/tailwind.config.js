@@ -5,10 +5,13 @@ module.exports = {
 		extend: {
 			colors: {
 				txPrimary: '#fff',
-                txSecondary: '#dfdfdf',
+				txSecondary: '#dfdfdf',
 				bgPrimary: '#303538',
 				bgSecondary: '#535b5b',
 				highlight: '#df972c',
+			},
+			minHeight: {
+				11: '44px',
 			},
 		},
 	},
