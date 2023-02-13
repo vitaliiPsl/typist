@@ -1,9 +1,10 @@
-package com.example.typist.service;
+package com.example.typist.service.impl;
 
 import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.repository.UserRepository;
+import com.example.typist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

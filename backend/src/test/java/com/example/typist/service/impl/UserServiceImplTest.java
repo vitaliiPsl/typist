@@ -1,9 +1,10 @@
-package com.example.typist.service;
+package com.example.typist.service.impl;
 
 import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.repository.UserRepository;
+import com.example.typist.service.impl.UserServiceImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
