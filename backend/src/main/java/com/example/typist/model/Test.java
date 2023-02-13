@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -13,12 +15,10 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "tests")
+@Document(collection = "tests")
 public class Test {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
     private int wpm;
 
@@ -30,7 +30,7 @@ public class Test {
 
     private LocalDateTime timestamp;
 
-    @ManyToOne(optional = false)
+    @DBRef(lazy = true)
     private User user;
 
     @Override
@@ -38,7 +38,7 @@ public class Test {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Test test = (Test) o;
-        return id == test.id;
+        return Objects.equals(id, test.id);
     }
 
     @Override

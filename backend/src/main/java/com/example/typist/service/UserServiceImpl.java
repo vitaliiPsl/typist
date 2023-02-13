@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper mapper;
 
     @Override
-    public UserDto getUserById(long id) {
+    public UserDto getUserById(String id) {
         log.debug("Get user by id {}", id);
 
         Optional<User> user = userRepository.findById(id);

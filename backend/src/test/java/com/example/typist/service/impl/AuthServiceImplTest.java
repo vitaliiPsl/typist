@@ -161,7 +161,7 @@ class AuthServiceImplTest {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
-        Long userId = 1234L;
+        String userId = "1234";
         User user = User.builder().id(userId).email("j.doe@mail.com").build();
 
         // when
@@ -183,7 +183,7 @@ class AuthServiceImplTest {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
-        Long userId = 1234L;
+        String userId = "1234";
 
         // when
         when(jwtService.decodeToken(token)).thenReturn(userId);

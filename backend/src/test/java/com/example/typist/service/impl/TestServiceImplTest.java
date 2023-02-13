@@ -35,7 +35,7 @@ class TestServiceImplTest {
     @org.junit.jupiter.api.Test
     void whenSaveTest_givenValidRequest_thenSaveTest() {
         // given
-        User actor = User.builder().id(3).email("j.doe@mail.com").build();
+        User actor = User.builder().id("1234").email("j.doe@mail.com").build();
 
         TestDto testDto = TestDto.builder().wpm(79).rawWpm(85).accuracy(96).duration(30).build();
 
@@ -54,7 +54,7 @@ class TestServiceImplTest {
     @org.junit.jupiter.api.Test
     void whenGetTestsByUserId_givenTestExist_thenReturnTests() {
         // given
-        long userId = 4;
+        String userId = "1234";
 
         List<Test> tests = List.of(
                 Test.builder().wpm(60).build(),

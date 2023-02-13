@@ -74,12 +74,12 @@ public class AuthServiceImpl implements AuthService {
     public Authentication exchangeToken(String token) {
         log.debug("Exchange token");
 
-        Long userId = jwtService.decodeToken(token);
+        String userId = jwtService.decodeToken(token);
 
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             log.error("User with id '{}' doesn't exist", userId);
-            throw new ResourceNotFoundException("User", "id", userId.toString());
+            throw new ResourceNotFoundException("User", "id", userId);
         }
 
         return new PreAuthenticatedAuthenticationToken(user.get(), token);

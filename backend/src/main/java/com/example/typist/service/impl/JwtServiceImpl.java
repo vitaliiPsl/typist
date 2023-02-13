@@ -45,15 +45,14 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Long decodeToken(String token) {
+    public String decodeToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).build();
 
             DecodedJWT decodedToken = verifier.verify(token);
 
-            String id = decodedToken.getSubject();
-            return Long.valueOf(id);
+            return decodedToken.getSubject();
         } catch (JWTVerificationException e) {
             log.error("Invalid JWT token: {}", token);
             throw new IllegalStateException("Invalid jwt token");

@@ -23,7 +23,7 @@ public class TestController {
     }
 
     @GetMapping
-    public List<TestDto> getTests(@RequestParam(name = "userId") long userId) {
+    public List<TestDto> getTests(@RequestParam(name = "userId") String userId) {
         return testService.getTestsByUseId(userId);
     }
 }

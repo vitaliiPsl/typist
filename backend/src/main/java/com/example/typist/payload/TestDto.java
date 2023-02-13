@@ -1,5 +1,6 @@
 package com.example.typist.payload;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 public class TestDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private long id;
+    private String id;
 
     @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @NotNull(message = "Result WPM is required")
@@ -35,6 +36,7 @@ public class TestDto {
     private int duration;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIncludeProperties({"id", "nickname"})
     private UserDto user;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

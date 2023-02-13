@@ -1,41 +1,42 @@
 package com.example.typist.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "users")
+@Document(collection = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
-    private long id;
+    private String id;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
     private String nickname;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
     private String email;
 
     @ToString.Exclude
-    @Column(nullable = false)
     private String password;
 
     private String avatar;
 
+    private boolean enabled;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    private boolean enabled;
 
     @Override
     public boolean equals(Object o) {

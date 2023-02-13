@@ -1,14 +1,12 @@
 package com.example.typist.repository;
 
 import com.example.typist.model.Test;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-@Transactional
-public interface TestRepository extends JpaRepository<Test, Long> {
-    List<Test> findByUser_Id(Long userId);
+public interface TestRepository extends MongoRepository<Test, String> {
+    List<Test> findByUser_Id(String userId);
 }

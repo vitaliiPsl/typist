@@ -12,7 +12,7 @@ public interface UserService {
      * @param id id of the user
      * @return retrieved user
      */
-    UserDto getUserById(long id);
+    UserDto getUserById(String id);
 
     /**
      * Get users with given nickname

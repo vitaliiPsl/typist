@@ -36,7 +36,7 @@ class UserServiceImplTest {
     @Test
     void whenGetUserById_givenUserExist_thenReturnUser() {
         // given
-        long id = 51;
+        String id = "1234";
         User user = User.builder().id(id).email("j.doe@mail.com").build();
 
         // when
@@ -53,7 +53,7 @@ class UserServiceImplTest {
     @Test
     void whenGetUserById_givenUserDoesntExist_thenThrowException() {
         // given
-        long id = 51;
+        String id = "1234";
 
         // when
         when(userRepository.findById(id)).thenReturn(Optional.empty());

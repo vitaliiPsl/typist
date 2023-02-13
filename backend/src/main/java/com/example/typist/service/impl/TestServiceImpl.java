@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +41,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestDto> getTestsByUseId(Long userId) {
+    public List<TestDto> getTestsByUseId(String userId) {
         log.debug("Get test by id of the user: {}", userId);
 
         List<Test> tests = testRepository.findByUser_Id(userId);

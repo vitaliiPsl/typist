@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class UserDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private long id;
+    private String id;
 
     @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @Email(message = "Must be valid email address")

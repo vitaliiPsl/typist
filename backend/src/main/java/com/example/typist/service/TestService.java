@@ -22,5 +22,5 @@ public interface TestService {
      * @param userId id of the user
      * @return list of retrieved tests
      */
-    List<TestDto> getTestsByUseId(Long userId);
+    List<TestDto> getTestsByUseId(String userId);
 }
