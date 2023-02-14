@@ -4,11 +4,19 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
+				highlight: '#df972c',
+
+				// text
 				txPrimary: '#fff',
-				txSecondary: '#dfdfdf',
+				txSecondary: '#c8c8c8a5',
+				txTestTextCorrect: '#fff',
+				txTestTextError: '#f00',
+				txTestTextExtra: '#ff5100',
+
+				// background
 				bgPrimary: '#303538',
 				bgSecondary: '#535b5b',
-				highlight: '#df972c',
+				bgTestText: '#0000002c',
 			},
 			minHeight: {
 				11: '44px',
