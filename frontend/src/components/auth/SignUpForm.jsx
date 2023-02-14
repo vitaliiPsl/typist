@@ -1,4 +1,4 @@
-import AuthFormWrapper from './AuthFormWrapper'
+import AuthFormWrapper from './AuthForm'
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -6,7 +6,6 @@ import { useSignUpMutation } from '../../app/features/auth/authApi'
 
 import Button from '../button/Button'
 import TextField from '../text-field/TextField'
-import Spinner from '../spinner/Spinner'
 
 const initUserDetails = { nickname: '', email: '', password: '' }
 
@@ -35,39 +34,31 @@ const SignUpForm = ({}) => {
 	}
 
 	return (
-		<AuthFormWrapper>
-			<h1 className='auth-form-title text-xl'>Sign up</h1>
+		<AuthFormWrapper title={'Sign up'} onSubmit={handleSubmit}>
+			<TextField
+				name={'nickname'}
+				required={true}
+				placeholder={'Nickname'}
+				onChange={handleInputChange}
+			/>
+			<TextField
+				name={'email'}
+				type={'email'}
+				required={true}
+				placeholder={'Email'}
+				onChange={handleInputChange}
+			/>
+			<TextField
+				name={'password'}
+				type={'password'}
+				required={true}
+				placeholder={'Password'}
+				onChange={handleInputChange}
+			/>
 
-			<form onSubmit={handleSubmit}>
-				<TextField
-					name={'nickname'}
-					required={true}
-					placeholder={'Nickname'}
-					onChange={handleInputChange}
-				/>
-				<TextField
-					name={'email'}
-					type={'email'}
-					required={true}
-					placeholder={'Email'}
-					onChange={handleInputChange}
-				/>
-				<TextField
-					name={'password'}
-					type={'password'}
-					required={true}
-					placeholder={'Password'}
-					onChange={handleInputChange}
-				/>
-
-				<Button
-					type={'submit'}
-					disabled={isLoading}
-					isLoading={isLoading}
-				>
-					Sign up
-				</Button>
-			</form>
+			<Button type={'submit'} disabled={isLoading} isLoading={isLoading}>
+				Sign up
+			</Button>
 		</AuthFormWrapper>
 	)
 }

@@ -1,4 +1,4 @@
-import AuthFormWrapper from './AuthFormWrapper'
+import AuthFormWrapper from './AuthForm'
 
 import { useState } from 'react'
 
@@ -43,35 +43,27 @@ const SignInForm = ({}) => {
 	}
 
 	return (
-		<AuthFormWrapper>
-			<h1 className='auth-form-title text-xl'>Sign in</h1>
+		<AuthFormWrapper title={'Sign in'} onSubmit={handleSubmit}>
+			<TextField
+				className='form-row'
+				name={'email'}
+				type={'email'}
+				required={true}
+				placeholder={'Email'}
+				onChange={handleInputChange}
+			/>
+			<TextField
+				className='form-row'
+				name={'password'}
+				type={'password'}
+				required={true}
+				placeholder={'Password'}
+				onChange={handleInputChange}
+			/>
 
-			<form onSubmit={handleSubmit}>
-				<TextField
-					className='form-row'
-					name={'email'}
-					type={'email'}
-					required={true}
-					placeholder={'Email'}
-					onChange={handleInputChange}
-				/>
-				<TextField
-					className='form-row'
-					name={'password'}
-					type={'password'}
-					required={true}
-					placeholder={'Password'}
-					onChange={handleInputChange}
-				/>
-
-				<Button
-					type={'submit'}
-					disabled={isLoading}
-					isLoading={isLoading}
-				>
-					Sign in
-				</Button>
-			</form>
+			<Button type={'submit'} disabled={isLoading} isLoading={isLoading}>
+				Sign in
+			</Button>
 		</AuthFormWrapper>
 	)
 }
