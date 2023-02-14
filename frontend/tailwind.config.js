@@ -21,6 +21,10 @@ module.exports = {
 			minHeight: {
 				11: '44px',
 			},
+			minWidth: {
+				30: '120px',
+				40: '160px',
+			},
 		},
 	},
 	plugins: [],
