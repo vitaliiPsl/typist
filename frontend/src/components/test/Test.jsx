@@ -286,9 +286,14 @@ const Test = () => {
 						onChange={onInput}
 						disabled={testStatus === TEST_STATUS_COMPLETE}
 					/>
-					<Button className={'w-1/6'} onClick={restartTest}>
-						Restart
-					</Button>
+					<button
+						onClick={restartTest}
+						className='flex px-4 items-center justify-center rounded-lg hover:bg-bgSecondary focus:bg-bgSecondary focus:outline-none focus:border-2 focus:border-txPrimary'
+					>
+						<span class='material-symbols-outlined'>
+							restart_alt
+						</span>
+					</button>
 				</div>
 
 				<TestText
