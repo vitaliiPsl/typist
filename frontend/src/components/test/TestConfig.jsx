@@ -29,7 +29,7 @@ const TestConfig = ({className}) => {
 
 	return (
 		<div className={`test-config ${className}`}>
-			<div className='config-row duration flex gap-2'>
+			<div className='config-row text-lg flex gap-2 duration'>
 				<span>time: </span>
 				{mapOptions(durationOptions)}
 			</div>
