@@ -7,7 +7,7 @@ const TestResult = ({ result }) => {
 
             <ResultScore score={result.rawWpm.toFixed(1)} label={'raw wpm'} />
 
-            <ResultScore score={result.accuracy.toFixed(2)} label={'accuracy'} />
+            <ResultScore score={`${result.accuracy.toFixed(1)}%`} label={'accuracy'} />
             
             <ResultScore score={result.duration.toFixed(0)} label={'duration'} />
 		</div>
