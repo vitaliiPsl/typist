@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
 	duration: 30,
-	durationOptions: [15, 30, 60, 90],
+	durationOptions: [15, 30, 60],
 }
 
 export const testConfigSlice = createSlice({
