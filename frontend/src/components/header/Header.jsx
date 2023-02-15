@@ -10,11 +10,18 @@ const Header = ({ user }) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
+    const logout = () => {
+        dispatch(clear())
+        navigate('/')
+    }
+
 	return (
 		<div className='header py-4 flex justify-between'>
-			<div className='header-title-box'>
+			<div className='header-title-box flex items-center justify-center'>
 				<NavLink to={'/'}>
-					<span className='header-title'>Typist</span>
+					<span className='header-title text-2xl font-medium'>
+						Typist
+					</span>
 				</NavLink>
 			</div>
 
@@ -35,6 +42,11 @@ const Header = ({ user }) => {
 							to={`/profile/${user.id}`}
 							label={user.nickname}
 						/>
+						<div onClick={logout} className='log-out-btn p-2 flex items-center justify-center hover:bg-bgSecondary rounded-md cursor-pointer'>
+							<span class='material-symbols-outlined'>
+								logout
+							</span>
+						</div>
 					</>
 				)}
 			</div>

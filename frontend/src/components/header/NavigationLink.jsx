@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom'
 
-const NavigationLink = ({ label, to, onClick }) => {
+const NavigationLink = ({ label, to }) => {
 	return (
-		<div className='navigation-link min-w-30' onClick={onClick}>
+		<div className='navigation-link min-w-30 text-center'>
 			<NavLink
 				to={to}
 				className={({ isActive }) =>
