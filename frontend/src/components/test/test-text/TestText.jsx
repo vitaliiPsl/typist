@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const TestText = ({ words, index, className }) => {
-	const [wordsPerLine, setWordsPerLine] = useState(12)
+	const [wordsPerLine, setWordsPerLine] = useState(15)
 	const [linesOnScreen, setLinesOnScreen] = useState(6)
 
 	useEffect(() => {
