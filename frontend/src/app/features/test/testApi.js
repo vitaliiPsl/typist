@@ -3,16 +3,16 @@ import { apiSlice } from '../../api'
 export const testApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		saveTest: builder.mutation({
-			query: (test) => ({
-				url: '/api/tests',
+			query: (testResult) => ({
+				url: '/tests',
 				method: 'post',
-				body: test,
+				body: testResult,
 			}),
 		}),
 		getTestByUserId: builder.query({
-			query: (args) => `/api/tests?useId=${args.userId}`,
+			query: (userId) => `/tests?userId=${userId}`,
 		}),
 	}),
 })
 
-export const { useSaveTestMutation } = testApi
+export const { useSaveTestMutation, useGetTestByUserIdQuery } = testApi
