@@ -31,8 +31,10 @@ const Header = ({ user }) => {
 				{user && (
 					<>
 						<NavigationLink to={'/settings'} label={'Settings'} />
-						<NavigationLink to={'/profile'} label={user.nickname} />
-						<NavigationLink to={'/logout'} label={'Log out'} />
+						<NavigationLink
+							to={`/profile/${user.id}`}
+							label={user.nickname}
+						/>
 					</>
 				)}
 			</div>
