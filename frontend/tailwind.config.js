@@ -8,7 +8,7 @@ module.exports = {
 
 				// text
 				txPrimary: '#fff',
-				txSecondary: '#c8c8c8a5',
+				txSecondary: '#cacaca',
 				txTestTextCorrect: '#fff',
 				txTestTextError: '#f00',
 				txTestTextExtra: '#ff5100',
