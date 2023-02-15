@@ -27,7 +27,7 @@ const SignInForm = ({}) => {
 
 		try {
 			let res = await signInQuery(credentials).unwrap()
-			let token = res.data?.token
+			let token = res.token
 
 			dispatch(setToken(token))
 			navigate('/')
