@@ -85,13 +85,6 @@ public class AuthServiceImpl implements AuthService {
         return new PreAuthenticatedAuthenticationToken(user.get(), token);
     }
 
-    @Override
-    public UserDto getAuthenticatedUser(User user) {
-        log.debug("Get authenticated user: {}", user);
-
-        return mapUserToUserDto(user);
-    }
-
     private User createUser(UserDto userDto) {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 

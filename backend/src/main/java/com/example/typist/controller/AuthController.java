@@ -1,13 +1,14 @@
 package com.example.typist.controller;
 
-import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -27,8 +28,4 @@ public class AuthController {
         return authService.signIn(request);
     }
 
-    @GetMapping("/user")
-    UserDto getAuthenticatedUser(@AuthenticationPrincipal User user) {
-        return authService.getAuthenticatedUser(user);
-    }
 }

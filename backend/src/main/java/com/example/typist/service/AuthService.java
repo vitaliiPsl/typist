@@ -1,6 +1,5 @@
 package com.example.typist.service;
 
-import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
@@ -28,16 +27,9 @@ public interface AuthService {
 
     /**
      * Exchange jwt token for user authentication
+     *
      * @param token jwt token to exchange
      * @return authentication object that contains user to whom token belongs
      */
     Authentication exchangeToken(String token);
-
-    /**
-     * Maps authenticated user to UserDto
-     * @param user authenticated user
-     * @return authenticated user dto
-     */
-    UserDto getAuthenticatedUser(User user);
 }
-
