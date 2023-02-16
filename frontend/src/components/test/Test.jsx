@@ -1,85 +1,98 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+
+import { useSaveTestMutation } from '../../app/features/test/testApi'
 
 import TextField from '../text-field/TextField'
-import Button from '../button/Button'
 import Word from './test-text/Word'
 import TestText from './test-text/TestText'
 import TestResult from './test-result/TestResult'
 import TestConfig from './TestConfig'
+import Spinner from '../spinner/Spinner'
 
 const TEST_STATUS_NOT_STARTED = 'not started'
 const TEST_STATUS_IN_PROGRESS = 'in progress'
 const TEST_STATUS_COMPLETE = 'complete'
 
-const initTest = {
-	// test text
-	text: [],
-	// test text broken into words and letters
-	words: [],
-	// current word
-	index: 0,
-	// test duration
-	duration: 0,
-	// number of errors
-	errorCount: 0,
-	// number of typed characters
-	characterCount: 0,
-}
-
 const Test = () => {
+	// authenticated user
+	const { user } = useSelector((state) => state.auth)
+
+	// selected duration of the set
 	const { duration } = useSelector((state) => state.testConfig)
+
+	// words that test text is built from
 	const { words, language } = useSelector((state) => state.text)
 
+	// properties of the test: text to type, words that are displayed, number of typed characters, number of errors
 	const [test, setTest] = useState()
-	const [testResult, setTestResult] = useState({
-		wpm: 85,
-		rawWpm: 93,
-		accuracy: 92,
-		duration: 30,
-	})
-	const [testStatus, setTestStatus] = useState(TEST_STATUS_NOT_STARTED)
 
-	const [testTime, setTestTime] = useState(duration)
+	// result of the test
+	const [result, setResult] = useState(null)
+
+	// status of the test
+	const [status, setStatus] = useState(TEST_STATUS_NOT_STARTED)
+
+	// index of the current word
+	const [index, setIndex] = useState(0)
+
+	// time at the given moment of the test
+	const [time, setTime] = useState(duration)
+
+	// id of the interval that is responsible for updating the time of the test
 	const [intervalId, setIntervalId] = useState(null)
 
 	const inputRef = useRef()
 
-	useEffect(() => {
-		prepareTest()
-	}, [])
+	// query to save the test result
+	const [saveTestQuery] = useSaveTestMutation()
 
+	// prepare test properties when text is available
 	useEffect(() => {
-		if (intervalId && testTime === 0) {
+		if (words) {
+			prepareTest()
+		}
+	}, [words])
+
+	// end test if there is not time left or user has already entered all the words
+	useEffect(() => {
+		if (!test) return
+
+		if ((intervalId && time === 0) || index === test.text.length) {
 			endTest()
 		}
-	}, [testTime])
+	}, [time, index])
 
+	// change the duration of the test on change of selected duration
 	useEffect(() => {
 		if (duration) {
-			setTestTime((_) => duration)
+			setTime((time) => duration)
 		}
 	}, [duration])
 
+	// build the test text and initialize other properties
 	const prepareTest = () => {
-		let text = shuffleWords([...words])
+		let text = shuffleWords([...words]).map(word => word.toLowerCase())
 		let testWords = prepareWords(text)
 
 		let test = {
+			// raw text
 			text: text,
+			// text displayed on the screen
 			words: testWords,
-			index: 0,
-			duration: duration,
 			errorCount: 0,
 			characterCount: 0,
 		}
 
 		setTest((_) => test)
-		setTestTime((_) => duration)
-		setTestStatus((_) => TEST_STATUS_NOT_STARTED)
+		setIndex((_) => 0)
+		setResult((_) => null)
+		setTime((_) => duration)
+		setStatus((_) => TEST_STATUS_NOT_STARTED)
 	}
 
+	// shuffle the text
 	const shuffleWords = (words) => {
 		for (let i = words.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1))
@@ -92,6 +105,7 @@ const Test = () => {
 		return words
 	}
 
+	// break text into words and words into letters
 	const prepareWords = (words) => {
 		return words.map((word, idx) => {
 			return word.split('').map((letter, index) => {
@@ -103,42 +117,44 @@ const Test = () => {
 		})
 	}
 
+	// start test: clear previous result, change status to 'in progress' and start the timer
 	const startTest = () => {
-		setTestStatus(() => TEST_STATUS_IN_PROGRESS)
+		setStatus(() => TEST_STATUS_IN_PROGRESS)
 
 		startTimer()
 	}
 
+	// restart test: stop timer, clear input and prepare new text and test properties
 	const restartTest = () => {
 		stopTimer()
+		prepareTest()
 
 		inputRef.current.value = ''
 		inputRef.current.focus()
-
-		prepareTest()
 	}
 
+	// end test: stop timer, change status and handle the result
 	const endTest = () => {
 		stopTimer()
 		inputRef.current.blur()
 
-		setTestStatus((_) => TEST_STATUS_COMPLETE)
+		setStatus((_) => TEST_STATUS_COMPLETE)
 
-		handleTestResult(test)
+		handleTestResult()
 	}
 
 	const startTimer = () => {
 		let interval = setInterval(() => {
-			setTestTime((testTime) => testTime - 1)
+			setTime((time) => time - 1)
 		}, 1000)
 
-		setIntervalId((_) => interval)
+		setIntervalId((intervalId) => interval)
 	}
 
 	const stopTimer = () => {
 		if (intervalId) {
 			clearInterval(intervalId)
-			setIntervalId((_) => null)
+			setIntervalId((intervalId) => null)
 		}
 	}
 
@@ -149,24 +165,24 @@ const Test = () => {
 	}
 
 	const onInput = () => {
-		if (testStatus === TEST_STATUS_NOT_STARTED) {
+		if (status === TEST_STATUS_NOT_STARTED) {
 			startTest()
 		}
 
 		let input = inputRef.current.value
 
-		let index = test.index
 		let word = test.text[index]
 
-		if (input[input.length - 1] === ' ' && input.length > 1) {
-			updateStats(word, input, index)
-			inputRef.current.value = ''
-		} else {
-			updateWord(word, input, index)
+		if (input[input.length - 1] !== ' ' || input.length <= 1) {
+			updateWord(word, input)
+			return
 		}
+
+		updateStats(word, input)
+		inputRef.current.value = ''
 	}
 
-	const updateWord = (word, input, index) => {
+	const updateWord = (word, input) => {
 		let letters = []
 
 		let wordLetters = word.split('')
@@ -196,21 +212,22 @@ const Test = () => {
 	}
 
 	const updateStats = (word, input) => {
-		console.log(word)
-		console.log(input)
-        
-		input = input.slice(0, input.length - 1)
-
 		let characterCount = test.characterCount
-		characterCount += input.length + 1 // include space character
+		characterCount += input.length
+
+		// remove space character
+		input = input.slice(0, input.length - 1)
 
 		let errorCount = test.errorCount
 		errorCount += countErrors(word, input)
 
-		let index = test.index
-		index += 1
+		setTest((test) => ({
+			...test,
+			characterCount,
+			errorCount,
+		}))
 
-		setTest((_) => ({ ...test, characterCount, errorCount, index }))
+		setIndex((index) => index + 1)
 	}
 
 	const countErrors = (word, input) => {
@@ -225,23 +242,33 @@ const Test = () => {
 		return errorCount
 	}
 
-	const handleTestResult = (test) => {
-		console.log(test)
-		let result = calculateResult(test)
+	const handleTestResult = () => {
+		// calculate actual duration
+		let testDuration = duration - time
 
-		setTestResult((_) => result)
+		let testResult = calculateResult(test, testDuration)
+		setResult((result) => testResult)
 
+		// save result of the test if user is signed in
+		if (user) {
+			saveTestResult(testResult)
+		}
+	}
+
+	const saveTestResult = async (result) => {
+		// if user is signed in the save result
 		try {
-			// save test result
-			console.log(result)
+			await saveTestQuery(result).unwrap()
 		} catch (err) {
 			console.log(err)
 		}
 	}
 
-	const calculateResult = (test) => {
-		let testDurationMins = test.duration / 60
+	const calculateResult = (test, testDuration) => {
+		// convert from seconds to minutes
+		let testDurationMins = testDuration / 60
 
+		// normalized number of typed words = number of typed characters / 5
 		let normalizedWordsCount = test.characterCount / 5
 
 		let correctCharactersCount = test.characterCount - test.errorCount
@@ -259,22 +286,24 @@ const Test = () => {
 			wpm,
 			rawWpm,
 			accuracy,
-			duration: test.duration,
+			duration: duration,
 		}
 	}
 
 	if (test) {
 		return (
-			<div className='test py-10 min-w-0 w-full h-full flex flex-col justify-center items-center gap-6 absolute'>
-				<TestConfig className={'absolute top-0 left-0'} />
-
-				{testStatus === TEST_STATUS_COMPLETE && testResult && (
-					<TestResult result={testResult} />
+			<div className='test py-10 min-w-0 flex-1 flex flex-col justify-center items-center gap-6 relative'>
+				{status !== TEST_STATUS_IN_PROGRESS && (
+					<TestConfig className={'absolute top-0 left-0'} />
 				)}
 
-				{testStatus !== TEST_STATUS_COMPLETE && (
+				{status === TEST_STATUS_COMPLETE && result && (
+					<TestResult result={result} />
+				)}
+
+				{status !== TEST_STATUS_COMPLETE && (
 					<div className='test-timer-box flex justify-center'>
-						<div className='test-timer text-7xl'>{testTime}</div>
+						<div className='test-timer text-7xl'>{time}</div>
 					</div>
 				)}
 
@@ -284,13 +313,13 @@ const Test = () => {
 						inputClassName='text-lg'
 						reference={inputRef}
 						onChange={onInput}
-						disabled={testStatus === TEST_STATUS_COMPLETE}
+						disabled={status === TEST_STATUS_COMPLETE}
 					/>
 					<button
 						onClick={restartTest}
 						className='flex px-4 items-center justify-center rounded-lg hover:bg-bgSecondary focus:bg-bgSecondary focus:outline-none focus:border-2 focus:border-txPrimary'
 					>
-						<span class='material-symbols-outlined'>
+						<span className='material-symbols-outlined'>
 							restart_alt
 						</span>
 					</button>
@@ -304,7 +333,11 @@ const Test = () => {
 			</div>
 		)
 	} else {
-		return <div className='test'></div>
+		return (
+			<div className='test py-10 min-w-0 flex-1 flex flex-col justify-center items-center gap-6 relative'>
+				<Spinner />
+			</div>
+		)
 	}
 }
 
