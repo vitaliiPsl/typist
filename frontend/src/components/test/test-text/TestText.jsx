@@ -36,6 +36,7 @@ const TestText = ({ words, index, className }) => {
 		let line = []
 		let lines = []
 
+		// line index = index of the current word / words per line
 		let lineIndex = Math.floor(index / wordsPerLine)
 
 		for (let i = 0; i < words.length; i++) {
@@ -46,6 +47,7 @@ const TestText = ({ words, index, className }) => {
 
 			line.push(words[i])
 		}
+		lines.push(line)
 
 		return getSliceOfLines(lines, lineIndex)
 	}
@@ -53,6 +55,10 @@ const TestText = ({ words, index, className }) => {
 	const getSliceOfLines = (lines, index) => {
 		let lowerBound = 0
 		let upperBound = linesOnScreen
+
+		if (lines.length < linesOnScreen) {
+			return lines
+		}
 
 		if (index >= linesOnScreen / 2) {
 			lowerBound = index - Math.floor(linesOnScreen / 2)
