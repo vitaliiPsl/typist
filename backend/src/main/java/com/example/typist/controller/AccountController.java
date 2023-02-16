@@ -3,6 +3,7 @@ package com.example.typist.controller;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
+import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,5 +25,10 @@ public class AccountController {
     @PutMapping("/nickname")
     public UserDto updateNickname(@RequestBody @Valid ChangeNicknameRequest request, @AuthenticationPrincipal User actor){
         return accountService.changeNickname(request, actor);
+    }
+
+    @PutMapping("/password")
+    public UserDto updatePassword(@RequestBody @Valid ChangePasswordRequest request, @AuthenticationPrincipal User actor){
+        return accountService.changePassword(request, actor);
     }
 }
