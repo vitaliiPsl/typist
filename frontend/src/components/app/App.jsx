@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
+
 import { setUser } from '../../app/features/auth/authSlice'
-import { useGetAuthenticatedUserQuery } from '../../app/features/auth/authApi'
+import {
+	useLazyGetAuthenticatedUserQuery,
+} from '../../app/features/auth/authApi'
 
 import { Route, Routes } from 'react-router-dom'
 
@@ -19,27 +22,33 @@ import Settings from '../settings/Settings'
 
 import Error404 from '../errorPages/Error404'
 import Error500 from '../errorPages/Error500'
+import Spinner from '../spinner/Spinner'
 
 const App = () => {
 	const { user, token } = useSelector((state) => state.auth)
 
-	const { data, error, isLoading } = useGetAuthenticatedUserQuery(null, {
-		skip: !token,
-	})
-
 	const dispatch = useDispatch()
 
-	useEffect(() => {
-		if (data) {
-			dispatch(setUser(data))
-		}
-		if (error) {
-			handleUserError(error)
-		}
-	}, [data, error])
+	const [getAuthenticatedUserQuery, { isLoading: userIsLoading }] =
+		useLazyGetAuthenticatedUserQuery()
 
-	const handleUserError = (error) => {
+	useEffect(() => {
+		if (token) {
+			loadAuthenticatedUser()
+		}
+	}, [token])
+
+	const handleError = (error) => {
 		console.log(error)
+	}
+
+	const loadAuthenticatedUser = async () => {
+		try {
+			let res = await getAuthenticatedUserQuery(null, false).unwrap()
+			dispatch(setUser(res))
+		} catch (err) {
+			handleError(err)
+		}
 	}
 
 	return (
@@ -47,36 +56,42 @@ const App = () => {
 			<div className='container min-w-full px-60 flex-1 flex flex-col gap-6'>
 				<Header user={user} />
 
-				<Routes>
-					<Route path={'/'} element={<Test />} />
+				{userIsLoading ? (
+					<div className='spinner-wrapper flex-1 flex items-center justify-center'>
+						<Spinner />
+					</div>
+				) : (
+					<Routes>
+						<Route path={'/'} element={<Test />} />
 
-					<Route element={<ProtectedRoute token={token} />}>
-						<Route path={'/settings'} element={<Settings />} />
-					</Route>
+						<Route element={<ProtectedRoute token={token} />}>
+							<Route path={'/settings'} element={<Settings />} />
+						</Route>
 
-					<Route
-						path={'/profile/:userId'}
-						element={<UserProfile />}
-					/>
-
-					<Route path={'/auth'}>
-						<Route path={'signin'} element={<SignInForm />} />
-						<Route path={'signup'} element={<SignUpForm />} />
-					</Route>
-
-					<Route path='/error'>
 						<Route
-							path={'/error/internal'}
-							element={<Error500 />}
+							path={'/profile/:userId'}
+							element={<UserProfile />}
 						/>
-						<Route
-							path={'/error/notfound'}
-							element={<Error404 />}
-						/>
-					</Route>
 
-					<Route path={'/*'} element={<Error404 />} />
-				</Routes>
+						<Route path={'/auth'}>
+							<Route path={'signin'} element={<SignInForm />} />
+							<Route path={'signup'} element={<SignUpForm />} />
+						</Route>
+
+						<Route path='/error'>
+							<Route
+								path={'/error/internal'}
+								element={<Error500 />}
+							/>
+							<Route
+								path={'/error/notfound'}
+								element={<Error404 />}
+							/>
+						</Route>
+
+						<Route path={'/*'} element={<Error404 />} />
+					</Routes>
+				)}
 			</div>
 		</div>
 	)
