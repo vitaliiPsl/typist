@@ -7,6 +7,9 @@ import {
 	useLazyGetAuthenticatedUserQuery,
 } from '../../app/features/auth/authApi'
 
+import { setLanguage, setWords } from '../../app/features/text/textSlice'
+import { useLoadTextQuery } from '../../app/features/text/textApi'
+
 import { Route, Routes } from 'react-router-dom'
 
 import ProtectedRoute from '../routes/ProtectedRoute'
@@ -32,11 +35,27 @@ const App = () => {
 	const [getAuthenticatedUserQuery, { isLoading: userIsLoading }] =
 		useLazyGetAuthenticatedUserQuery()
 
+	const {
+		data: textData,
+		error: textError,
+		isLoading: textIsLoading,
+	} = useLoadTextQuery({ count: 500 })
+
 	useEffect(() => {
 		if (token) {
 			loadAuthenticatedUser()
 		}
 	}, [token])
+
+	useEffect(() => {
+		if (textData) {
+			dispatch(setWords(textData.words))
+			dispatch(setLanguage(textData.language))
+		}
+		if (textError) {
+			handleError(textError)
+		}
+	}, [textData, textError])
 
 	const handleError = (error) => {
 		console.log(error)
@@ -56,7 +75,7 @@ const App = () => {
 			<div className='container min-w-full px-60 flex-1 flex flex-col gap-6'>
 				<Header user={user} />
 
-				{userIsLoading ? (
+				{userIsLoading || textIsLoading ? (
 					<div className='spinner-wrapper flex-1 flex items-center justify-center'>
 						<Spinner />
 					</div>

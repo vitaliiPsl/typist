@@ -4,7 +4,8 @@ export const textApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		loadText: builder.query({
 			query: (args) => ({
-				url: '/api/text',
+				url: `/text`,
+				params: args,
 			}),
 		}),
 	}),
