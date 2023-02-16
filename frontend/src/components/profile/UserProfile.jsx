@@ -28,7 +28,11 @@ const UserProfile = ({}) => {
 
 	return (
 		<div className='user-profile pb-6 min-h-0 flex-1 flex flex-col gap-6'>
-			{!user && <Spinner />}
+			{!user && (
+				<div className='spinner-wrapper flex-1 flex items-center justify-center'>
+					<Spinner />
+				</div>
+			)}
 			{user && (
 				<>
 					<UserInfo user={user} />

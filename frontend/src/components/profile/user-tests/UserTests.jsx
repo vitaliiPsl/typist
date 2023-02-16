@@ -25,7 +25,9 @@ const UserTests = ({ userId }) => {
 	}
 
 	return !tests ? (
-		<Spinner />
+		<div className='spinner-wrapper flex-1 flex items-center justify-center'>
+			<Spinner />
+		</div>
 	) : (
 		<div className='user-tests'>
 			<TestsChart tests={tests} />

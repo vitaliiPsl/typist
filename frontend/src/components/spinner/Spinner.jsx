@@ -1,11 +1,12 @@
 const Spinner = ({
-	size = 'lg', // xs 24px without text | sm 36px without text | lg 80px with text
+	size = 'lg', // xs 24px without text | sm 36px without text | lg 80px with text,
+    className
 }) => {
 	let wrapperSize = size === 'xs' ? 24 : size === 'sm' ? 36 : 80
 
 	return (
 		<div
-			className={`spinner-wrapper relative`}
+			className={`spinner-wrapper relative ${className}`}
 			style={{
 				width: wrapperSize,
 				height: wrapperSize,
