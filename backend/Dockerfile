@@ -1,5 +1,11 @@
-FROM openjdk:11
+FROM eclipse-temurin:17-jdk-jammy
+
 WORKDIR /app
-ADD target/*.jar ./app.jar
-EXPOSE ${PORT}
-CMD java -jar ./app.jar
+
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:resolve
+
+COPY src ./src
+
+CMD ["./mvnw", "spring-boot:run"]
