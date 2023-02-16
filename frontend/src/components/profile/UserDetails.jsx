@@ -1,7 +1,7 @@
 const UserDetails = ({ user }) => {
 	return (
-		<div className='profile-user-details py-4 flex items-center justify-between gap-6 border-b border-b-txSecondary'>
-			<div className='profile-user-avatar-box w-11 h-11 flex-shrink-0 flex items-center justify-center bg-zinc-800 text-white border-2 border-white rounded-full overflow-hidden'>
+		<div className='profile-user-details py-4 flex items-center justify-around gap-6 border-b border-b-txSecondary'>
+			<div className='profile-user-avatar-box w-14 h-14 flex-shrink-0 flex items-center justify-center bg-zinc-800 text-white border-2 border-white rounded-full overflow-hidden'>
 				{user.avatar && (
 					<img src={user.avatar} alt='' className='user-avatar' />
 				)}

@@ -26,9 +26,8 @@ ChartJS.register(
 const TestsChart = ({ tests }) => {
 	const options = {
 		responsive: true,
-		color: '#fff',
+        color: '#fff',
 		scales: {
-			color: '#d8d8d8',
 			yAxes: {
 				ticks: {
 					color: '#d8d8d8',
