@@ -3,6 +3,7 @@ package com.example.typist.service;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
+import com.example.typist.payload.account.ChangePasswordRequest;
 
 /**
  * Account related logic
@@ -19,9 +20,18 @@ public interface AccountService {
     /**
      * Change nickname of the user
      *
-     * @param request change request
+     * @param request change nickname request
      * @param actor authenticated user
      * @return user dto with updated nickname
      */
     UserDto changeNickname(ChangeNicknameRequest request, User actor);
+
+    /**
+     * Change password of the user
+     *
+     * @param request change password request
+     * @param actor authenticated user
+     * @return user dto with updated password
+     */
+    UserDto changePassword(ChangePasswordRequest request, User actor);
 }

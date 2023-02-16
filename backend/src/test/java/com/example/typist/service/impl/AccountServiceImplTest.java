@@ -3,6 +3,7 @@ package com.example.typist.service.impl;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
+import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.repository.UserRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -105,5 +106,47 @@ class AccountServiceImplTest {
         assertThrows(RuntimeException.class, () -> accountService.changeNickname(changeNicknameRequest, actor));
         verify(passwordEncoder).matches(requestPassword, actor.getPassword());
         verify(userRepository).findByNickname(requestNickname);
+    }
+
+    @Test
+    void whenChangePassword_givenValidRequest_thenChangePassword() {
+        // given
+        String oldPassword = "password";
+        String newPassword = "pass11word";
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(oldPassword, newPassword);
+
+        String encodedNewPassword = "3g12h098#!5";
+        String actorOldPassword = "31l#y1pyy5";
+        User actor = User.builder().id("1234-qwer").nickname("j.doe").password(actorOldPassword).build();
+
+        // when
+        when(passwordEncoder.matches(oldPassword, actorOldPassword)).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn(encodedNewPassword);
+
+        UserDto res = accountService.changePassword(changePasswordRequest, actor);
+
+        // then
+        verify(passwordEncoder).matches(oldPassword, actorOldPassword);
+        verify(passwordEncoder).encode(newPassword);
+
+        assertThat(res.getId(), Matchers.is(actor.getId()));
+    }
+
+
+    @Test
+    void whenChangePassword_givenInvalidPassword_thenThrowException() {
+        // given
+        String oldPassword = "password";
+        String newPassword = "pass11word";
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(oldPassword, newPassword);
+
+        User actor = User.builder().id("1234-qwer").nickname("j.doe").password("31l#y1pyy5").build();
+
+        // when
+        when(passwordEncoder.matches(oldPassword, actor.getPassword())).thenReturn(false);
+
+        // then
+        assertThrows(RuntimeException.class, () -> accountService.changePassword(changePasswordRequest, actor));
+        verify(passwordEncoder).matches(oldPassword, actor.getPassword());
     }
 }

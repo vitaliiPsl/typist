@@ -5,6 +5,7 @@ import com.example.typist.exception.ResourceAlreadyExistException;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
+import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AccountServiceImpl implements AccountService {
     public UserDto changeNickname(ChangeNicknameRequest request, User actor) {
         log.debug("Change nickname of the user {} to {}", actor.getId(), request.getNickname());
 
+        // verify password
         if(!passwordEncoder.matches(request.getPassword(), actor.getPassword())) {
             log.error("Incorrect password");
             throw new ForbiddenException("Incorrect password");
@@ -47,6 +49,22 @@ public class AccountServiceImpl implements AccountService {
         }
 
         actor.setNickname(requestedNickname);
+        return mapUserToUserDto(actor);
+    }
+
+    @Override
+    public UserDto changePassword(ChangePasswordRequest request, User actor) {
+        log.debug("Change password of the user {}", actor.getId());
+
+        // verify password
+        if(!passwordEncoder.matches(request.getOldPassword(), actor.getPassword())) {
+            log.error("Incorrect password");
+            throw new ForbiddenException("Incorrect password");
+        }
+
+        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+        actor.setPassword(encodedNewPassword);
+
         return mapUserToUserDto(actor);
     }
 
