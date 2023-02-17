@@ -1,12 +1,6 @@
-import { useEffect } from 'react'
 import MaterialIcon from '../material-icon/MaterialIcon'
 
 const Error = ({ message, onClose }) => {
-	// close error after 15 seconds
-	useEffect(() => {
-		setInterval(() => onClose(), 1000 * 15)
-	})
-
 	return (
 		<div className='error min-w-40 py-2 px-6 pr-2 flex items-center justify-between gap-4 absolute bottom-4 right-4 border border-red-600 rounded-lg z-50'>
 			<div className='error-message-box flex-1'>
