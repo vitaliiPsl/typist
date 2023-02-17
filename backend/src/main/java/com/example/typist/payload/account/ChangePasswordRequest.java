@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 public class ChangePasswordRequest {
     @ToString.Exclude
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank(message = "You need provide your old password")
+    @NotBlank(message = "You need provide your current password")
     private String oldPassword;
 
     @ToString.Exclude

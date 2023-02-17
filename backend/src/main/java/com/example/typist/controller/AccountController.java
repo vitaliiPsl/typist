@@ -4,6 +4,7 @@ import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
 import com.example.typist.payload.account.ChangePasswordRequest;
+import com.example.typist.payload.account.DeleteAccountRequest;
 import com.example.typist.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,11 @@ public class AccountController {
     @GetMapping
     public UserDto getAuthenticatedUser(@AuthenticationPrincipal User actor) {
         return accountService.getAuthenticatedUser(actor);
+    }
+
+    @DeleteMapping
+    public void deleteAccount(@RequestBody @Valid DeleteAccountRequest request, @AuthenticationPrincipal User actor) {
+        accountService.deleteAccount(request, actor);
     }
 
     @PutMapping("/nickname")
