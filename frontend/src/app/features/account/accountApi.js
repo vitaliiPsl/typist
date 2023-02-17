@@ -9,9 +9,15 @@ export const accountApiSlice = apiSlice.injectEndpoints({
 				body: payload,
 			}),
 		}),
+		updatePassword: builder.mutation({
+			query: (payload) => ({
+				url: '/account/password',
+				method: 'put',
+				body: payload,
+			}),
+		}),
 	}),
 })
 
-export const {
-	useUpdateNicknameMutation,
-} = accountApiSlice
+export const { useUpdateNicknameMutation, useUpdatePasswordMutation } =
+	accountApiSlice
