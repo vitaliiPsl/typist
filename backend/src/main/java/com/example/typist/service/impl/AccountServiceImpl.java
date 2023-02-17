@@ -6,21 +6,26 @@ import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
 import com.example.typist.payload.account.ChangePasswordRequest;
+import com.example.typist.payload.account.DeleteAccountRequest;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.AccountService;
+import com.example.typist.service.TestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AccountServiceImpl implements AccountService {
     private final UserRepository userRepository;
+    private final TestService testService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
 
@@ -36,19 +41,18 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Change nickname of the user {} to {}", actor.getId(), request.getNickname());
 
         // verify password
-        if(!passwordEncoder.matches(request.getPassword(), actor.getPassword())) {
-            log.error("Incorrect password");
-            throw new ForbiddenException("Incorrect password");
-        }
+        verifyPassword(request.getPassword(), actor.getPassword());
 
         String requestedNickname = request.getNickname();
         Optional<User> user = userRepository.findByNickname(requestedNickname);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             log.error("Nickname {} is already taken", requestedNickname);
             throw new ResourceAlreadyExistException("Nickname is already taken");
         }
 
         actor.setNickname(requestedNickname);
+        actor = userRepository.save(actor);
+
         return mapUserToUserDto(actor);
     }
 
@@ -57,15 +61,35 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Change password of the user {}", actor.getId());
 
         // verify password
-        if(!passwordEncoder.matches(request.getOldPassword(), actor.getPassword())) {
-            log.error("Incorrect password");
-            throw new ForbiddenException("Incorrect password");
-        }
+        verifyPassword(request.getOldPassword(), actor.getPassword());
 
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         actor.setPassword(encodedNewPassword);
 
+        actor = userRepository.save(actor);
+
         return mapUserToUserDto(actor);
+    }
+
+    @Override
+    public void deleteAccount(DeleteAccountRequest request, User actor) {
+        log.debug("Delete account of the user {}", actor.getId());
+
+        // verify password
+        verifyPassword(request.getPassword(), actor.getPassword());
+
+        // delete user
+        userRepository.delete(actor);
+
+        // delete tests
+        testService.deleteTests(actor.getId());
+    }
+
+    private void verifyPassword(String requestPassword, String actualPassword) {
+        if (!passwordEncoder.matches(requestPassword, actualPassword)) {
+            log.error("Incorrect password");
+            throw new ForbiddenException("Incorrect password");
+        }
     }
 
     private UserDto mapUserToUserDto(User user) {
