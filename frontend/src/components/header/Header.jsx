@@ -1,19 +1,19 @@
-import { useState } from 'react'
-
 import { useDispatch } from 'react-redux'
 import { clear } from '../../app/features/auth/authSlice'
 
 import { NavLink, useNavigate } from 'react-router-dom'
+
 import NavigationLink from './NavigationLink'
+import MaterialIcon from '../material-icon/MaterialIcon'
 
 const Header = ({ user }) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
-    const logout = () => {
-        dispatch(clear())
-        navigate('/')
-    }
+	const logout = () => {
+		dispatch(clear())
+		navigate('/')
+	}
 
 	return (
 		<div className='header py-4 flex justify-between'>
@@ -42,11 +42,7 @@ const Header = ({ user }) => {
 							to={`/profile/${user.id}`}
 							label={user.nickname}
 						/>
-						<div onClick={logout} className='log-out-btn p-2 flex items-center justify-center hover:bg-bgSecondary rounded-md cursor-pointer'>
-							<span class='material-symbols-outlined'>
-								logout
-							</span>
-						</div>
+						<MaterialIcon icon={'logout'} onClick={logout} />
 					</>
 				)}
 			</div>
