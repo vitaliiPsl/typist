@@ -17,7 +17,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
 			}),
 		}),
 		getAuthenticatedUser: builder.query({
-			query: () => '/auth/user',
+			query: () => '/account',
 		}),
 	}),
 })
