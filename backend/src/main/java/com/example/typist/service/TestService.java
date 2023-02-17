@@ -23,4 +23,11 @@ public interface TestService {
      * @return list of retrieved tests
      */
     List<TestDto> getTestsByUseId(String userId);
+
+    /**
+     * Delete tests of given user
+     *
+     * @param userId id of the user
+     */
+    void deleteTests(String userId);
 }

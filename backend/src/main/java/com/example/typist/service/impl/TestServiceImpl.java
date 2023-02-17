@@ -49,6 +49,13 @@ public class TestServiceImpl implements TestService {
         return tests.stream().map(this::mapTestToTestDto).collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteTests(String userId) {
+        log.debug("Delete tests of the user {}", userId);
+
+        testRepository.deleteByUser_Id(userId);
+    }
+
     private TestDto mapTestToTestDto(Test test) {
         return mapper.map(test, TestDto.class);
     }

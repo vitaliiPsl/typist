@@ -69,4 +69,16 @@ class TestServiceImplTest {
         verify(testRepository).findByUser_Id(userId);
         assertThat(res, Matchers.hasSize(2));
     }
+
+    @org.junit.jupiter.api.Test
+    void whenDeleteTests_givenIdOfTheUser_theDeleteTestsOfThatUser() {
+        // given
+        String userId = "1234-qwer";
+
+        // when
+        testService.deleteTests(userId);
+
+        // then
+        verify(testRepository).deleteByUser_Id(userId);
+    }
 }
