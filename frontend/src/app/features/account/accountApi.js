@@ -23,6 +23,13 @@ export const accountApiSlice = apiSlice.injectEndpoints({
 				body: payload,
 			}),
 		}),
+		deleteAccount: builder.mutation({
+			query: (payload) => ({
+				url: '/account',
+				method: 'delete',
+				body: payload,
+			}),
+		}),
 	}),
 })
 
@@ -30,4 +37,5 @@ export const {
 	useUpdateNicknameMutation,
 	useUpdatePasswordMutation,
 	useDeleteTestsMutation,
+    useDeleteAccountMutation
 } = accountApiSlice
