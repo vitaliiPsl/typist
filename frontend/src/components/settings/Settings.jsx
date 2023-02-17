@@ -1,5 +1,6 @@
 import ChangeNickname from './user-settings/ChangeNickname'
 import ChangePassword from './user-settings/ChangePassword'
+import DeleteAccount from './user-settings/DeleteAccount'
 import ResetTests from './user-settings/ResetTests'
 
 const Settings = ({}) => {
@@ -11,6 +12,7 @@ const Settings = ({}) => {
 				<ChangeNickname />
 				<ChangePassword />
 				<ResetTests />
+				<DeleteAccount />
 			</div>
 		</div>
 	)
