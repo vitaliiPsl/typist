@@ -55,7 +55,7 @@ const ChangePassword = () => {
 				<span className='change-password'>Change password</span>
 			</div>
 
-			<div className='section-interaction-box'>
+            <div className='section-interaction min-w-50'>
 				<Button onClick={() => setModalOpen((modalOpen) => true)}>
 					Change password
 				</Button>

@@ -58,7 +58,7 @@ const DeleteAccount = () => {
 				<span className='change-nickname'>Delete account</span>
 			</div>
 
-			<div className='section-interaction'>
+            <div className='section-interaction min-w-50'>
 				<Button onClick={() => setModalOpen((modalOpen) => true)}>
 					Delete account
 				</Button>
