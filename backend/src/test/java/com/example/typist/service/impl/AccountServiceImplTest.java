@@ -5,6 +5,7 @@ import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
 import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.payload.account.DeleteAccountRequest;
+import com.example.typist.payload.account.DeleteTestsRequest;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.TestService;
 import org.hamcrest.Matchers;
@@ -195,6 +196,45 @@ class AccountServiceImplTest {
 
         // then
         assertThrows(RuntimeException.class, () -> accountService.deleteAccount(request, actor));
+        verify(passwordEncoder).matches(requestPassword, actorPassword);
+    }
+
+
+    @Test
+    void whenDeleteTests_givenValidRequest_thenDeleteTests() {
+        // given
+        String requestPassword = "1234-4321";
+        DeleteTestsRequest request = new DeleteTestsRequest(requestPassword);
+
+        String actorId = "1234";
+        String actorPassword = "1234-4321";
+        User actor = User.builder().id(actorId).email("j.doe@mail.com").password(actorPassword).build();
+
+        // when
+        when(passwordEncoder.matches(requestPassword, actorPassword)).thenReturn(true);
+
+        accountService.deleteTests(request, actor);
+
+        // then
+        verify(passwordEncoder).matches(requestPassword, actorPassword);
+        verify(testService).deleteTests(actorId);
+    }
+
+    @Test
+    void whenDeleteTests_givenIncorrectPassword_thenThrowException() {
+        // given
+        String requestPassword = "1234-4321";
+        DeleteTestsRequest request = new DeleteTestsRequest(requestPassword);
+
+        String actorId = "1234";
+        String actorPassword = "1234-4321";
+        User actor = User.builder().id(actorId).email("j.doe@mail.com").password(actorPassword).build();
+
+        // when
+        when(passwordEncoder.matches(requestPassword, actorPassword)).thenReturn(false);
+
+        // then
+        assertThrows(RuntimeException.class, () -> accountService.deleteTests(request, actor));
         verify(passwordEncoder).matches(requestPassword, actorPassword);
     }
 }

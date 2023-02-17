@@ -5,6 +5,7 @@ import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
 import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.payload.account.DeleteAccountRequest;
+import com.example.typist.payload.account.DeleteTestsRequest;
 
 /**
  * Account related logic
@@ -44,4 +45,12 @@ public interface AccountService {
      * @param actor   authenticated user
      */
     void deleteAccount(DeleteAccountRequest request, User actor);
+
+    /**
+     * Delete tests of the authenticated user
+     *
+     * @param request delete tests request
+     * @param actor   authenticated user
+     */
+    void deleteTests(DeleteTestsRequest request, User actor);
 }

@@ -9,8 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteAccountRequest {
-
+public class DeleteTestsRequest {
     @ToString.Exclude
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "You need provide your password")

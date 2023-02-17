@@ -7,6 +7,7 @@ import com.example.typist.payload.UserDto;
 import com.example.typist.payload.account.ChangeNicknameRequest;
 import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.payload.account.DeleteAccountRequest;
+import com.example.typist.payload.account.DeleteTestsRequest;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.AccountService;
 import com.example.typist.service.TestService;
@@ -80,6 +81,17 @@ public class AccountServiceImpl implements AccountService {
 
         // delete user
         userRepository.delete(actor);
+
+        // delete tests
+        testService.deleteTests(actor.getId());
+    }
+
+    @Override
+    public void deleteTests(DeleteTestsRequest request, User actor) {
+        log.debug("Delete tests of the user {}", actor);
+
+        // verify password
+        verifyPassword(request.getPassword(), actor.getPassword());
 
         // delete tests
         testService.deleteTests(actor.getId());
