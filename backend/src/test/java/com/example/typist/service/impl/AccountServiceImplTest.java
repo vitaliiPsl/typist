@@ -7,6 +7,7 @@ import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.payload.account.DeleteAccountRequest;
 import com.example.typist.payload.account.DeleteTestsRequest;
 import com.example.typist.repository.UserRepository;
+import com.example.typist.service.ImageService;
 import com.example.typist.service.TestService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,9 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -33,6 +36,9 @@ class AccountServiceImplTest {
 
     @Mock
     TestService testService;
+
+    @Mock
+    ImageService imageService;
 
     @Mock
     PasswordEncoder passwordEncoder;
@@ -199,6 +205,33 @@ class AccountServiceImplTest {
         verify(passwordEncoder).matches(requestPassword, actorPassword);
     }
 
+    @Test
+    void whenDeleteUser_givenUseHasAccountImage_thenDeleteImage() {
+        // given
+        String requestPassword = "1234-4321";
+        DeleteAccountRequest request = new DeleteAccountRequest(requestPassword);
+
+        String actorId = "1234";
+        String actorPassword = "1234-4321";
+        String accountImage = "qwer-1234";
+        User actor = User.builder()
+                .id(actorId)
+                .email("j.doe@mail.com")
+                .password(actorPassword)
+                .image(accountImage)
+                .build();
+
+        // when
+        when(passwordEncoder.matches(requestPassword, actorPassword)).thenReturn(true);
+
+        accountService.deleteAccount(request, actor);
+
+        // then
+        verify(passwordEncoder).matches(requestPassword, actorPassword);
+        verify(userRepository).delete(actor);
+        verify(testService).deleteTests(actorId);
+        verify(imageService).deleteImage(accountImage);
+    }
 
     @Test
     void whenDeleteTests_givenValidRequest_thenDeleteTests() {
@@ -236,5 +269,51 @@ class AccountServiceImplTest {
         // then
         assertThrows(RuntimeException.class, () -> accountService.deleteTests(request, actor));
         verify(passwordEncoder).matches(requestPassword, actorPassword);
+    }
+
+    @Test
+    void whenSaveProfileImage_givenValidRequest_thenSaveProfileImage() {
+        // given
+        MultipartFile image = new MockMultipartFile("testImage", "image.jpg", null, new byte[]{});
+
+        User actor = User.builder().id("2134").image(null).build();
+
+        String imageId = "qwer-1234";
+
+        // when
+        when(imageService.saveImage(image)).thenReturn(imageId);
+        when(userRepository.save(actor)).then(AdditionalAnswers.returnsFirstArg());
+
+        UserDto res = accountService.saveProfileImage(image, actor);
+
+        // then
+        verify(imageService).saveImage(image);
+        verify(userRepository).save(actor);
+
+        assertThat(res.getImage(), Matchers.is(imageId));
+    }
+
+    @Test
+    void whenSaveAccountImage_givenUserAlreadyHasImage_thenDeleteExistingImage() {
+        // given
+        MultipartFile image = new MockMultipartFile("testImage", "image.jpg", null, new byte[]{});
+
+        String existingImageId = "1234-qwer";
+        User actor = User.builder().id("2134").image(existingImageId).build();
+
+        String imageId = "qwer-1234";
+
+        // when
+        when(imageService.saveImage(image)).thenReturn(imageId);
+        when(userRepository.save(actor)).then(AdditionalAnswers.returnsFirstArg());
+
+        UserDto res = accountService.saveProfileImage(image, actor);
+
+        // then
+        verify(imageService).deleteImage(existingImageId);
+        verify(imageService).saveImage(image);
+        verify(userRepository).save(actor);
+
+        assertThat(res.getImage(), Matchers.is(imageId));
     }
 }

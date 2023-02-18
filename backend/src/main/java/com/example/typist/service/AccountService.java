@@ -6,6 +6,7 @@ import com.example.typist.payload.account.ChangeNicknameRequest;
 import com.example.typist.payload.account.ChangePasswordRequest;
 import com.example.typist.payload.account.DeleteAccountRequest;
 import com.example.typist.payload.account.DeleteTestsRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Account related logic
@@ -53,4 +54,13 @@ public interface AccountService {
      * @param actor   authenticated user
      */
     void deleteTests(DeleteTestsRequest request, User actor);
+
+    /**
+     * Save profile image
+     *
+     * @param image image
+     * @param actor authenticated user
+     * @return user dto with updated image
+     */
+    UserDto saveProfileImage(MultipartFile image, User actor);
 }

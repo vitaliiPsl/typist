@@ -10,6 +10,7 @@ import com.example.typist.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -30,17 +31,22 @@ public class AccountController {
     }
 
     @PutMapping("/nickname")
-    public UserDto updateNickname(@RequestBody @Valid ChangeNicknameRequest request, @AuthenticationPrincipal User actor){
+    public UserDto updateNickname(@RequestBody @Valid ChangeNicknameRequest request, @AuthenticationPrincipal User actor) {
         return accountService.changeNickname(request, actor);
     }
 
     @PutMapping("/password")
-    public UserDto updatePassword(@RequestBody @Valid ChangePasswordRequest request, @AuthenticationPrincipal User actor){
+    public UserDto updatePassword(@RequestBody @Valid ChangePasswordRequest request, @AuthenticationPrincipal User actor) {
         return accountService.changePassword(request, actor);
     }
 
     @DeleteMapping("/tests")
     public void deleteTests(@RequestBody @Valid DeleteTestsRequest request, @AuthenticationPrincipal User actor) {
         accountService.deleteTests(request, actor);
+    }
+
+    @PostMapping("/image")
+    public UserDto saveProfileImage(@RequestParam("image") MultipartFile image, @AuthenticationPrincipal User actor) {
+        return accountService.saveProfileImage(image, actor);
     }
 }

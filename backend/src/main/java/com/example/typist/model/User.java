@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @ToString.Exclude
     private String password;
 
-    private String avatar;
+    private String image;
 
     private boolean enabled;
 

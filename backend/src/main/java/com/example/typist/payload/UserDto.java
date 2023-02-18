@@ -34,6 +34,9 @@ public class UserDto {
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String image;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

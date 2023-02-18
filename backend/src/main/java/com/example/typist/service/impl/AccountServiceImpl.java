@@ -10,6 +10,7 @@ import com.example.typist.payload.account.DeleteAccountRequest;
 import com.example.typist.payload.account.DeleteTestsRequest;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.AccountService;
+import com.example.typist.service.ImageService;
 import com.example.typist.service.TestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -26,7 +28,10 @@ import java.util.Optional;
 @Transactional
 public class AccountServiceImpl implements AccountService {
     private final UserRepository userRepository;
+
     private final TestService testService;
+    private final ImageService imageService;
+
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
 
@@ -84,6 +89,11 @@ public class AccountServiceImpl implements AccountService {
 
         // delete tests
         testService.deleteTests(actor.getId());
+
+        // delete account image
+        if (actor.getImage() != null) {
+            imageService.deleteImage(actor.getImage());
+        }
     }
 
     @Override
@@ -95,6 +105,25 @@ public class AccountServiceImpl implements AccountService {
 
         // delete tests
         testService.deleteTests(actor.getId());
+    }
+
+    @Override
+    public UserDto saveProfileImage(MultipartFile image, User actor) {
+        log.debug("Save profile image of user {}", actor);
+
+        // delete existing image
+        if(actor.getImage() != null) {
+            imageService.deleteImage(actor.getImage());
+        }
+
+        // save image
+        String imageId = imageService.saveImage(image);
+
+        // update image reference
+        actor.setImage(imageId);
+        actor = userRepository.save(actor);
+
+        return mapUserToUserDto(actor);
     }
 
     private void verifyPassword(String requestPassword, String actualPassword) {
