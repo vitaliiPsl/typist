@@ -15,14 +15,6 @@ public interface UserService {
     UserDto getUserById(String id);
 
     /**
-     * Get account image of the given
-     *
-     * @param id id of the user
-     * @return image
-     */
-    byte[] getUserImage(String id);
-
-    /**
      * Get users with given nickname
      *
      * @param nickname nickname

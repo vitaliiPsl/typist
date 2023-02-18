@@ -1,5 +1,6 @@
 package com.example.typist.service.impl;
 
+import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.repository.ImageRepository;
 import com.example.typist.service.ImageService;
 
@@ -49,12 +50,22 @@ public class ImageServiceImpl implements ImageService {
     public byte[] loadImage(String id) {
         log.debug("Load image with id: {}", id);
 
+        if(id == null) {
+            log.error("Id of the images is null");
+            throw new ResourceNotFoundException("Image doesn't exist");
+        }
+
         return imageRepository.loadImage(id);
     }
 
     @Override
     public void deleteImage(String id) {
         log.debug("Delete image with id {}", id);
+
+        if(id == null) {
+            log.error("Id of the images is null");
+            throw new ResourceNotFoundException("Image doesn't exist");
+        }
 
         imageRepository.deleteImage(id);
     }
