@@ -7,6 +7,8 @@ spring:
       password: ${MONGODB_PASSWORD}
       database: ${MONGODB_DATABASE}
       authentication-database: ${MONGODB_AUTHENTICATION_DB:admin}
+      auto-index-creation: true
+  
   servlet:
     multipart:
       enabled: true
@@ -30,3 +32,7 @@ words:
 image-store:
   upload-path: images
   allowed-extensions-regex: jpg|jpeg|png|bmp
+
+logging:
+  level:
+    com.example.typist: DEBUG
