@@ -2,6 +2,13 @@ import { apiSlice } from '../../api'
 
 export const accountApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
+        uploadImage: builder.mutation({
+            query: (image) => ({
+				url: '/account/image',
+				method: 'post',
+				body: image,
+			}),
+        }),
 		updateNickname: builder.mutation({
 			query: (payload) => ({
 				url: '/account/nickname',
@@ -34,6 +41,7 @@ export const accountApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
+    useUploadImageMutation,
 	useUpdateNicknameMutation,
 	useUpdatePasswordMutation,
 	useDeleteTestsMutation,
