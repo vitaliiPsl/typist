@@ -4,7 +4,7 @@ import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.model.User;
 import com.example.typist.payload.UserDto;
 import com.example.typist.repository.UserRepository;
-import com.example.typist.service.impl.UserServiceImpl;
+import com.example.typist.service.ImageService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +27,9 @@ class UserServiceImplTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    ImageService imageService;
 
     @Spy
     ModelMapper mapper;
@@ -80,5 +83,55 @@ class UserServiceImplTest {
         // then
         verify(userRepository).findByNicknameContainingIgnoreCase(nickname);
         assertThat(res, Matchers.hasSize(2));
+    }
+
+    @Test
+    void whenGetUserImage_givenImageExist_thenReturnImage() {
+        // given
+        String userId = "2134";
+        String imageId = "qwer";
+        User user = User.builder().id(userId).email("j.doe@mail.com").image(imageId).build();
+
+        byte[] image = new byte[]{1, 2, 3};
+
+        // when
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(imageService.loadImage(imageId)).thenReturn(image);
+
+        byte[] res = userService.getUserImage(userId);
+
+        // then
+        verify(userRepository).findById(userId);
+        verify(imageService).loadImage(imageId);
+
+        assertThat(res, Matchers.is(image));
+    }
+
+    @Test
+    void whenGetUserImage_givenAccountDoesntHaveImage_thenThrowException() {
+        // given
+        String userId = "2134";
+        User user = User.builder().id(userId).email("j.doe@mail.com").image(null).build();
+
+
+        // when
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // then
+        assertThrows(RuntimeException.class, () -> userService.getUserImage(userId));
+        verify(userRepository).findById(userId);
+    }
+
+    @Test
+    void whenGetUserImage_givenUserDoesntExist_thenThrowException() {
+        // given
+        String userId = "2134";
+
+        // when
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(RuntimeException.class, () -> userService.getUserImage(userId));
+        verify(userRepository).findById(userId);
     }
 }
