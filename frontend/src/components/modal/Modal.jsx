@@ -1,17 +1,18 @@
 // import './Modal.css'
 
+import MaterialIcon from '../material-icon/MaterialIcon'
+
 const Modal = ({ title, children, onClose }) => {
 	return (
 		<div
 			className={`modal-overlay h-screen w-full absolute top-0 left-0 flex items-center justify-center bg-bgSecondary bg-opacity-30`}
 		>
-			<div className='modal p-10 text-center flex flex-col gap-2 bg-bgPrimary border border-txPrimary rounded-lg relative'>
-				<div
-					className='close-btn p-1 absolute top-2 right-2 flex items-center justify-center rounded-md hover:bg-bgSecondary cursor-pointer'
-					onClick={onClose}
-				>
-					<span className='material-symbols-outlined'>close</span>
-				</div>
+			<div className='modal p-10 min-w-100 text-center flex flex-col gap-6 bg-bgPrimary border border-txPrimary rounded-lg relative'>
+				<MaterialIcon
+					icon={'close'}
+					className={'absolute top-1 right-1'}
+                    onClick={onClose}
+				/>
 
 				<h2 className='modal-title font-semibold'>{title}</h2>
 
