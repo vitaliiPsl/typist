@@ -27,6 +27,7 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/api/auth/signin", "/api/auth/signup").permitAll()
                 .antMatchers("/api/text").permitAll()
+                .antMatchers("/api/images/**").permitAll()
                 .anyRequest().authenticated();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
