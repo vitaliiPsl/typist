@@ -2,6 +2,7 @@ import ChangeNickname from './user-settings/ChangeNickname'
 import ChangePassword from './user-settings/ChangePassword'
 import DeleteAccount from './user-settings/DeleteAccount'
 import ResetTests from './user-settings/ResetTests'
+import ChangeAccountImage from './user-settings/ChangeAccountImage'
 
 const Settings = ({}) => {
 	return (
@@ -9,6 +10,7 @@ const Settings = ({}) => {
 			<div className='settings-section-wrapper flex flex-col gap-4'>
 				<span className='text-xl font-semibold'>User settings</span>
 
+				<ChangeAccountImage />
 				<ChangeNickname />
 				<ChangePassword />
 				<ResetTests />
