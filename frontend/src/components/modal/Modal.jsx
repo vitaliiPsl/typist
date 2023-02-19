@@ -2,12 +2,12 @@
 
 import MaterialIcon from '../material-icon/MaterialIcon'
 
-const Modal = ({ title, children, onClose }) => {
+const Modal = ({ title, children, onClose, className }) => {
 	return (
 		<div
 			className={`modal-overlay h-screen w-full absolute top-0 left-0 flex items-center justify-center bg-bgSecondary bg-opacity-30`}
 		>
-			<div className='modal p-10 min-w-100 text-center flex flex-col gap-6 bg-bgPrimary border border-txPrimary rounded-lg relative'>
+			<div className={`modal ${className} p-10 min-h-0 min-w-100 text-center flex flex-col gap-6 bg-bgPrimary border border-txPrimary rounded-lg relative`}>
 				<MaterialIcon
 					icon={'close'}
 					className={'absolute top-1 right-1'}

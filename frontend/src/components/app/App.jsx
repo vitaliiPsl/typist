@@ -1,11 +1,9 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
 
 import { setUser } from '../../app/features/auth/authSlice'
-import {
-	useLazyGetAuthenticatedUserQuery,
-} from '../../app/features/auth/authApi'
+import { useLazyGetAuthenticatedUserQuery } from '../../app/features/auth/authApi'
 
 import { setLanguage, setWords } from '../../app/features/text/textSlice'
 import { useLoadTextQuery } from '../../app/features/text/textApi'
@@ -27,8 +25,14 @@ import Error404 from '../errorPages/Error404'
 import Error500 from '../errorPages/Error500'
 import Spinner from '../spinner/Spinner'
 
+import RankingModal from '../ranking-modal/RankingModal'
+import MaterialIcon from '../material-icon/MaterialIcon'
+import Image from '../image/Image'
+
 const App = () => {
 	const { user, token } = useSelector((state) => state.auth)
+
+	const [rankingModalOpen, setRankingModalOpen] = useState()
 
 	const dispatch = useDispatch()
 
@@ -110,6 +114,17 @@ const App = () => {
 
 						<Route path={'/*'} element={<Error404 />} />
 					</Routes>
+				)}
+
+				<div
+					className='ranking-button-wrapper fixed bottom-8 left-8 w-12 h-12'
+					onClick={() => setRankingModalOpen(true)}
+				>
+					<Image icon={'emoji_flags'} rounded='rounded-md' />
+				</div>
+
+				{rankingModalOpen && (
+					<RankingModal onClose={() => setRankingModalOpen(false)} />
 				)}
 			</div>
 		</div>
