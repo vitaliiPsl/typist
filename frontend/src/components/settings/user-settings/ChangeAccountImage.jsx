@@ -3,12 +3,15 @@ import { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { setUser } from '../../../app/features/auth/authSlice'
+import { setNotification } from '../../../app/features/notification/notificationSlice'
+
 import { useUploadImageMutation } from '../../../app/features/account/accountApi'
+
+import { API_URL } from '../../../config'
 
 import Modal from '../../modal/Modal'
 import Button from '../../button/Button'
 import Image from '../../image/Image'
-import { API_URL } from '../../../config'
 
 const ChangeAccountImage = () => {
 	const { user } = useSelector((state) => state.auth)
@@ -18,8 +21,6 @@ const ChangeAccountImage = () => {
 	const [image, setImage] = useState(null)
 	const [previewUrl, setPreviewUrl] = useState(null)
 	const imageRef = useRef()
-
-	const [error, setError] = useState()
 
 	const dispatch = useDispatch()
 
@@ -56,6 +57,7 @@ const ChangeAccountImage = () => {
 		try {
 			let user = await uploadImageQuery(image).unwrap()
 			dispatch(setUser(user))
+            dispatch(setNotification({message: 'Your account images has been changed successfully!', type: 'success'}))
 
 			setModalOpen((modalOpen) => false)
 		} catch (err) {
@@ -65,7 +67,7 @@ const ChangeAccountImage = () => {
 
 	const handleError = (error) => {
 		let message = error.data.message
-		setError((error) => message)
+        dispatch(setNotification({ message, type: 'error' }))
 	}
 
 	const onImageClick = () => {
@@ -75,7 +77,7 @@ const ChangeAccountImage = () => {
 	return (
 		<div className='settings-section flex items-center justify-between gap-4'>
 			<div className='section-description w-1/2'>
-				<span className='change-nickname'>Change nickname</span>
+				<span className='change-nickname'>Change account image</span>
 			</div>
 
 			<div className='section-interaction min-w-50 flex justify-center'>

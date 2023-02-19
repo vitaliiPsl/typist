@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
 import { useDispatch } from 'react-redux'
+
 import { clear } from '../../../app/features/auth/authSlice'
+import { setNotification } from '../../../app/features/notification/notificationSlice'
 
 import { useDeleteAccountMutation } from '../../../app/features/account/accountApi'
 
 import Modal from '../../modal/Modal'
 import Button from '../../button/Button'
 import TextField from '../../text-field/TextField'
-import Error from '../../errors/Error'
 
 const initPayload = { password: '' }
 
@@ -16,8 +17,6 @@ const DeleteAccount = () => {
 	const [modalOpen, setModalOpen] = useState()
 
 	const [payload, setPayload] = useState(initPayload)
-
-	const [error, setError] = useState()
 
 	const dispatch = useDispatch()
 
@@ -38,6 +37,7 @@ const DeleteAccount = () => {
 		try {
 			await deleteAccountQuery(payload).unwrap()
 			dispatch(clear())
+            dispatch(setNotification({message: 'Your account has been successfully deleted!', type: 'success'}))
 
 			setModalOpen((modalOpen) => false)
 		} catch (err) {
@@ -47,13 +47,11 @@ const DeleteAccount = () => {
 
 	const handleError = (error) => {
 		let message = error.data.message
-		setError((error) => message)
+        dispatch(setNotification({ message, type: 'error' }))
 	}
 
 	return (
 		<div className='settings-section flex items-center justify-between gap-4'>
-			{error && <Error message={error} onClose={() => setError(null)} />}
-
 			<div className='section-description w-1/2'>
 				<span className='change-nickname'>Delete account</span>
 			</div>

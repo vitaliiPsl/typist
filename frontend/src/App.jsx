@@ -8,6 +8,11 @@ import { useLazyGetAuthenticatedUserQuery } from './app/features/auth/authApi'
 import { setLanguage, setWords } from './app/features/text/textSlice'
 import { useLoadTextQuery } from './app/features/text/textApi'
 
+import {
+	setNotification,
+	removeNotification,
+} from './app/features/notification/notificationSlice'
+
 import { Route, Routes } from 'react-router-dom'
 
 import ProtectedRoute from './components/routes/ProtectedRoute'
@@ -25,12 +30,13 @@ import Error404 from './components/errorPages/Error404'
 import Error500 from './components/errorPages/Error500'
 import Spinner from './components/spinner/Spinner'
 
-import RankingModal from './components/ranking-modal/RankingModal'
-import MaterialIcon from './components/material-icon/MaterialIcon'
 import Image from './components/image/Image'
+import RankingModal from './components/ranking-modal/RankingModal'
+import Notification from './components/notification/Notification'
 
 const App = () => {
 	const { user, token } = useSelector((state) => state.auth)
+	const { notification } = useSelector((state) => state.notification)
 
 	const [rankingModalOpen, setRankingModalOpen] = useState()
 
@@ -116,15 +122,27 @@ const App = () => {
 					</Routes>
 				)}
 
-				<div
-					className='ranking-button-wrapper fixed bottom-8 left-8 w-12 h-12'
-					onClick={() => setRankingModalOpen(true)}
-				>
-					<Image icon={'emoji_flags'} rounded='rounded-md' />
-				</div>
+				<>
+					<div
+						className='ranking-button-wrapper fixed bottom-8 left-8 w-12 h-12'
+						onClick={() => setRankingModalOpen(true)}
+					>
+						<Image icon={'emoji_flags'} rounded='rounded-md' />
+					</div>
 
-				{rankingModalOpen && (
-					<RankingModal onClose={() => setRankingModalOpen(false)} />
+					{rankingModalOpen && (
+						<RankingModal
+							onClose={() => setRankingModalOpen(false)}
+						/>
+					)}
+				</>
+
+				{notification && (
+					<Notification
+						message={notification.message}
+						type={notification.type}
+						onClose={() => dispatch(removeNotification())}
+					/>
 				)}
 			</div>
 		</div>

@@ -3,12 +3,13 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { setUser } from '../../../app/features/auth/authSlice'
+import { setNotification } from '../../../app/features/notification/notificationSlice'
+
 import { useUpdateNicknameMutation } from '../../../app/features/account/accountApi'
 
 import Modal from '../../modal/Modal'
 import Button from '../../../components/button/Button'
 import TextField from '../../../components/text-field/TextField'
-import Error from '../../errors/Error'
 
 const initPayload = {
 	nickname: '',
@@ -18,8 +19,6 @@ const initPayload = {
 const ChangeNickname = () => {
 	const [modalOpen, setModalOpen] = useState()
 	const [payload, setPayload] = useState(initPayload)
-
-	const [error, setError] = useState()
 
 	const dispatch = useDispatch()
 
@@ -40,7 +39,9 @@ const ChangeNickname = () => {
 	const changeNickname = async (payload) => {
 		try {
 			let user = await updateNicknameQuery(payload).unwrap()
+
             dispatch(setUser(user))
+            dispatch(setNotification({message: 'Your nickname has been changed successfully!', type: 'success'}))
 
 			setModalOpen((modalOpen) => false)
 		} catch (err) {
@@ -50,13 +51,12 @@ const ChangeNickname = () => {
 
 	const handleError = (error) => {
 		let message = error.data.message
-		setError((error) => message)
+
+        dispatch(setNotification({message, type: 'error'}))
 	}
 
 	return (
 		<div className='settings-section flex items-center justify-between gap-4'>
-			{error && <Error message={error} onClose={() => setError(null)} />}
-
 			<div className='section-description w-1/2'>
 				<span className='change-nickname'>Change nickname</span>
 			</div>

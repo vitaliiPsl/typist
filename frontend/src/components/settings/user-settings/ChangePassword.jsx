@@ -1,11 +1,12 @@
 import { useState } from 'react'
 
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../../../app/features/notification/notificationSlice'
 import { useUpdatePasswordMutation } from '../../../app/features/account/accountApi'
 
 import Modal from '../../modal/Modal'
 import Button from '../../../components/button/Button'
 import TextField from '../../../components/text-field/TextField'
-import Error from '../../errors/Error'
 
 const initPayload = {
 	newPassword: '',
@@ -17,7 +18,7 @@ const ChangePassword = () => {
 
 	const [payload, setPayload] = useState(initPayload)
 
-	const [error, setError] = useState()
+    const dispatch = useDispatch()
 
 	const [updatePasswordQuery, { isLoading }] = useUpdatePasswordMutation()
 
@@ -35,6 +36,7 @@ const ChangePassword = () => {
 	const changePassword = async (payload) => {
 		try {
 			await updatePasswordQuery(payload).unwrap()
+            dispatch(setNotification({message: 'Your password has been changed successfully!', type: 'success'}))
 
 			setModalOpen((modalOpen) => false)
 		} catch (err) {
@@ -44,18 +46,16 @@ const ChangePassword = () => {
 
 	const handleError = (error) => {
 		let message = error.data.message
-		setError((error) => message)
+		dispatch(setNotification({ message, type: 'error' }))
 	}
 
 	return (
 		<div className='settings-section flex items-center justify-between gap-4'>
-			{error && <Error message={error} onClose={() => setError(null)} />}
-
 			<div className='section-description-box w-1/2'>
 				<span className='change-password'>Change password</span>
 			</div>
 
-            <div className='section-interaction min-w-50'>
+			<div className='section-interaction min-w-50'>
 				<Button onClick={() => setModalOpen((modalOpen) => true)}>
 					Change password
 				</Button>
