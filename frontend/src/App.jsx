@@ -2,32 +2,32 @@ import { useState, useEffect } from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
 
-import { setUser } from '../../app/features/auth/authSlice'
-import { useLazyGetAuthenticatedUserQuery } from '../../app/features/auth/authApi'
+import { setUser } from './app/features/auth/authSlice'
+import { useLazyGetAuthenticatedUserQuery } from './app/features/auth/authApi'
 
-import { setLanguage, setWords } from '../../app/features/text/textSlice'
-import { useLoadTextQuery } from '../../app/features/text/textApi'
+import { setLanguage, setWords } from './app/features/text/textSlice'
+import { useLoadTextQuery } from './app/features/text/textApi'
 
 import { Route, Routes } from 'react-router-dom'
 
-import ProtectedRoute from '../routes/ProtectedRoute'
-import Header from '../header/Header'
+import ProtectedRoute from './components/routes/ProtectedRoute'
+import Header from './components/header/Header'
 
-import Test from '../test/Test'
+import Test from './components/test/Test'
 
-import SignInForm from '../auth/SignInForm'
-import SignUpForm from '../auth/SignUpForm'
+import SignInForm from './components/auth/SignInForm'
+import SignUpForm from './components/auth/SignUpForm'
 
-import UserProfile from '../profile/UserProfile'
-import Settings from '../settings/Settings'
+import UserProfile from './components/profile/UserProfile'
+import Settings from './components/settings/Settings'
 
-import Error404 from '../errorPages/Error404'
-import Error500 from '../errorPages/Error500'
-import Spinner from '../spinner/Spinner'
+import Error404 from './components/errorPages/Error404'
+import Error500 from './components/errorPages/Error500'
+import Spinner from './components/spinner/Spinner'
 
-import RankingModal from '../ranking-modal/RankingModal'
-import MaterialIcon from '../material-icon/MaterialIcon'
-import Image from '../image/Image'
+import RankingModal from './components/ranking-modal/RankingModal'
+import MaterialIcon from './components/material-icon/MaterialIcon'
+import Image from './components/image/Image'
 
 const App = () => {
 	const { user, token } = useSelector((state) => state.auth)
