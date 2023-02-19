@@ -4,6 +4,7 @@ import com.example.typist.config.security.jwt.JwtTokenVerifierFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,6 +29,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/auth/signin", "/api/auth/signup").permitAll()
                 .antMatchers("/api/text").permitAll()
                 .antMatchers("/api/images/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/tests").permitAll()
                 .anyRequest().authenticated();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
