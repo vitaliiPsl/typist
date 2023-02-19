@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 
 import moment from 'moment'
 
-import TestsTableRow from './TestsTableRow'
-import TestsTableData from './TestsTableData'
 import Spinner from '../../../spinner/Spinner'
+import Table from '../../../table/Table'
+import TableData from '../../../table/TableData'
+import TableRow from '../../../table/TableRow'
 
 const TestsTable = ({ tests }) => {
 	const [tableTests, setTableTests] = useState()
-	const [sortDirection, setSortDirection] = useState(-1)
 
 	useEffect(() => {
 		setTableTests([...tests])
@@ -54,16 +54,16 @@ const TestsTable = ({ tests }) => {
 
 	const mapTestToTableRow = (test, index) => {
 		return (
-			<TestsTableRow
+			<TableRow
 				className={index % 2 == 0 ? 'bg-bgSecondary' : ''}
 				key={index}
 			>
-				<TestsTableData data={test.wpm} />
-				<TestsTableData data={test.rawWpm} />
-				<TestsTableData data={test.accuracy} />
-				<TestsTableData data={test.duration} />
-				<TestsTableData data={moment(test.timestamp).format('lll')} />
-			</TestsTableRow>
+				<TableData>{test.wpm}</TableData>
+				<TableData>{test.rawWpm}</TableData>
+				<TableData>{test.accuracy}</TableData>
+				<TableData>{test.duration}</TableData>
+				<TableData>{moment(test.timestamp).format('lll')}</TableData>
+			</TableRow>
 		)
 	}
 
@@ -72,38 +72,48 @@ const TestsTable = ({ tests }) => {
 	) : (
 		<div className='user-tableTests-table'>
 			{tableTests.length !== 0 && (
-				<table className='tableTests-table w-full'>
+				<Table>
 					<thead>
-						<TestsTableRow>
-							<TestsTableData
-								data={'WPM'}
+						<TableRow>
+							<TableData
 								onClick={sortByWpm}
 								className='cursor-pointer'
-							/>
-							<TestsTableData
-								data={'Raw WPM'}
+							>
+								{'WPM'}
+							</TableData>
+
+							<TableData
 								onClick={sortByRawWpm}
 								className='cursor-pointer'
-							/>
-							<TestsTableData
-								data={'Accuracy'}
+							>
+								{'Raw WPM'}
+							</TableData>
+
+							<TableData
 								onClick={sortByAccuracy}
 								className='cursor-pointer'
-							/>
-							<TestsTableData
-								data={'Duration'}
+							>
+								{'Accuracy'}
+							</TableData>
+
+							<TableData
 								onClick={sortByDuration}
 								className='cursor-pointer'
-							/>
-							<TestsTableData
-								data={'Timestamp'}
+							>
+								{'Duration'}
+							</TableData>
+
+							<TableData
 								onClick={sortByTimestamp}
 								className='cursor-pointer'
-							/>
-						</TestsTableRow>
+							>
+								{'Timestamp'}
+							</TableData>
+						</TableRow>
 					</thead>
+
 					<tbody>{mapTestsToTableRows(tableTests)}</tbody>
-				</table>
+				</Table>
 			)}
 		</div>
 	)
