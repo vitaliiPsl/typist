@@ -8,4 +8,4 @@ export const userApiSlice = apiSlice.injectEndpoints({
 	}),
 })
 
-export const { useGetUserByIdQuery } = userApiSlice
+export const { useGetUserByIdQuery, useLazyGetUserByIdQuery } = userApiSlice

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
-import { useGetUserByIdQuery } from '../../app/features/user/userApi'
+
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../../app/features/notification/notificationSlice'
+
+import {
+	useLazyGetUserByIdQuery,
+} from '../../app/features/user/userApi'
 
 import UserInfo from './UserDetails'
 import Spinner from '../spinner/Spinner'
@@ -11,24 +17,38 @@ const UserProfile = ({}) => {
 	const { userId } = useParams()
 	const [user, setUser] = useState()
 
-	const { data, error } = useGetUserByIdQuery(userId, { skip: !userId })
+    const dispatch = useDispatch()
+
+	const [getUserQuery, { isLoading }] = useLazyGetUserByIdQuery()
 
 	useEffect(() => {
-		if (data) {
-			setUser((user) => data)
+		if (userId) {
+            loadUser(userId)
 		}
-		if (error) {
-			handleError(error)
+	}, [userId])
+
+	const loadUser = async (id) => {
+		try {
+			let user = await getUserQuery(id, false).unwrap()
+			setUser(user)
+		} catch (err) {
+			handleError(err)
 		}
-	}, [data, error])
+	}
 
 	const handleError = (error) => {
-		console.log(error)
+        let status = error.status
+
+        if (status === 404 || status === 500) {
+            throw {status: status, message: error.data.message}
+        }
+
+		dispatch(setNotification({message: error.data.message, type: 'error'}))
 	}
 
 	return (
 		<div className='user-profile pb-6 min-h-0 flex-1 flex flex-col gap-6'>
-			{!user && (
+			{isLoading && (
 				<div className='spinner-wrapper flex-1 flex items-center justify-center'>
 					<Spinner />
 				</div>
