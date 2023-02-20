@@ -6,11 +6,11 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { setToken } from '../../app/features/auth/authSlice'
+import { setNotification } from '../../app/features/notification/notificationSlice'
 import { useSignInMutation } from '../../app/features/auth/authApi'
 
 import Button from '../button/Button'
 import TextField from '../text-field/TextField'
-import Spinner from '../spinner/Spinner'
 
 const initCredentials = { email: '', password: '' }
 
@@ -32,8 +32,18 @@ const SignInForm = ({}) => {
 			dispatch(setToken(token))
 			navigate('/')
 		} catch (err) {
-			console.log(err)
+			handleError(err)
 		}
+	}
+
+	const handleError = (err) => {
+		let status = err.status
+		
+        if (status === 500) {
+			throw { status: err.status, message: err.data.message }
+		}
+
+        dispatch(setNotification({message: err.data.message, type: 'error'}))
 	}
 
 	const handleInputChange = (e) => {
@@ -52,6 +62,7 @@ const SignInForm = ({}) => {
 				placeholder={'Email'}
 				onChange={handleInputChange}
 			/>
+
 			<TextField
 				className='form-row'
 				name={'password'}

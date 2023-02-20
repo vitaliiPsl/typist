@@ -1,8 +1,13 @@
 import AuthFormWrapper from './AuthForm'
 
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../../app/features/notification/notificationSlice'
+
 import { useSignUpMutation } from '../../app/features/auth/authApi'
+
+import { useNavigate } from 'react-router-dom'
 
 import Button from '../button/Button'
 import TextField from '../text-field/TextField'
@@ -12,6 +17,7 @@ const initUserDetails = { nickname: '', email: '', password: '' }
 const SignUpForm = ({}) => {
 	const [userDetails, setUserDetails] = useState(initUserDetails)
 
+    const dispatch = useDispatch()
 	const navigate = useNavigate()
 
 	const [signUpQuery, { isLoading }] = useSignUpMutation()
@@ -23,8 +29,18 @@ const SignUpForm = ({}) => {
 			await signUpQuery(userDetails).unwrap()
 			navigate('/auth/signin')
 		} catch (err) {
-			console.log(err)
+			handleError(err)
 		}
+	}
+
+    const handleError = (err) => {
+		let status = err.status
+		
+        if (status === 500) {
+			throw { status: err.status, message: err.data.message }
+		}
+
+        dispatch(setNotification({message: err.data.message, type: 'error'}))
 	}
 
 	const handleInputChange = (e) => {
