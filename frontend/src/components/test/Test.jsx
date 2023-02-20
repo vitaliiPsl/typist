@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotification } from '../../app/features/notification/notificationSlice'
 
 import { useSaveTestMutation } from '../../app/features/test/testApi'
 
@@ -14,6 +15,8 @@ import Spinner from '../spinner/Spinner'
 const TEST_STATUS_NOT_STARTED = 'not started'
 const TEST_STATUS_IN_PROGRESS = 'in progress'
 const TEST_STATUS_COMPLETE = 'complete'
+
+const AVER_CHARACTERS_PER_WORD = 5
 
 const Test = () => {
 	// authenticated user
@@ -45,6 +48,8 @@ const Test = () => {
 
 	const inputRef = useRef()
 
+	const dispatch = useDispatch()
+
 	// query to save the test result
 	const [saveTestQuery] = useSaveTestMutation()
 
@@ -73,7 +78,7 @@ const Test = () => {
 
 	// build the test text and initialize other properties
 	const prepareTest = () => {
-		let text = shuffleWords([...words]).map(word => word.toLowerCase())
+		let text = shuffleWords([...words]).map((word) => word.toLowerCase())
 		let testWords = prepareWords(text)
 
 		let test = {
@@ -249,9 +254,14 @@ const Test = () => {
 		let testResult = calculateResult(test, testDuration)
 		setResult((result) => testResult)
 
-		// save result of the test if user is signed in
-		if (user) {
+		// save result of the test if user is signed in and wpm is greater than 5
+		if (!user) return
+
+		if (testResult.wpm > 5) {
 			saveTestResult(testResult)
+		} else {
+			let msg = 'Your typist speed must be greater than 5 WPM to be saved'
+			dispatch(setNotification({ message: msg }))
 		}
 	}
 
@@ -268,19 +278,20 @@ const Test = () => {
 		// convert from seconds to minutes
 		let testDurationMins = testDuration / 60
 
-		// normalized number of typed words = number of typed characters / 5
-		let normalizedWordsCount = test.characterCount / 5
+        // words count = total num of typed characters / aver num of characters per word
+		let wordsCount = test.characterCount / AVER_CHARACTERS_PER_WORD
 
+        // correct chars count = total num of typed characters - num of errors
 		let correctCharactersCount = test.characterCount - test.errorCount
 
-		// raw wpm = (typed characters / 5) / test duration in minutes
-		let rawWpm = normalizedWordsCount / testDurationMins
+        // correct words count = num of correct chars / aver num of characters per word 
+		let correctWordsCount = correctCharactersCount / AVER_CHARACTERS_PER_WORD
 
-		// wmp = (raw wmp - errors) / test duration in minutes
-		let wpm = (normalizedWordsCount - test.errorCount) / testDurationMins
+		let rawWpm = calculateRawWpm(wordsCount, testDurationMins)
 
-		// accuracy = number of correct characters / total number of typed characters
-		let accuracy = (correctCharactersCount / test.characterCount) * 100
+		let wpm = calculateWpm(correctWordsCount, testDurationMins)
+
+		let accuracy = calculateAccuracy(correctCharactersCount, test.characterCount)
 
 		return {
 			wpm,
@@ -288,6 +299,27 @@ const Test = () => {
 			accuracy,
 			duration: duration,
 		}
+	}
+
+	// raw wpm = (typed characters / 5) / test duration in minutes
+	const calculateRawWpm = (wordsCount, testDurationMins) => {
+		const rawWpm = wordsCount / testDurationMins
+
+		return rawWpm > 0 ? rawWpm : 0
+	}
+
+	// wmp = number of correct words / test duration in minutes
+	const calculateWpm = (correctWordsCount, testDurationMins) => {
+		const wpm = correctWordsCount / testDurationMins
+
+		return wpm > 0 ? wpm : 0
+	}
+
+	// accuracy = number of correct characters / total number of typed characters
+	const calculateAccuracy = (correctCharsCount, charsCount) => {
+		const accuracy = (correctCharsCount / charsCount) * 100
+
+		return accuracy > 0 ? accuracy : 0
 	}
 
 	if (test) {
