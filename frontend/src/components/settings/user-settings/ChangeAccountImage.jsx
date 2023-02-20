@@ -80,7 +80,7 @@ const ChangeAccountImage = () => {
 				<span className='change-nickname'>Change account image</span>
 			</div>
 
-			<div className='section-interaction min-w-50 flex justify-center'>
+			<div className='section-interaction md:min-w-50 flex justify-center'>
 				<div className='profile-image-box w-12 h-12'>
 					<Image
 						image={user?.image ? `${API_URL}/images/${user.image}` : null}

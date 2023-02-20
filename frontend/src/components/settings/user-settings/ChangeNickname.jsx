@@ -61,7 +61,7 @@ const ChangeNickname = () => {
 				<span className='change-nickname'>Change nickname</span>
 			</div>
 
-			<div className='section-interaction min-w-50'>
+			<div className='section-interaction md:min-w-50'>
 				<Button onClick={() => setModalOpen((modalOpen) => true)}>
 					Change nickname
 				</Button>

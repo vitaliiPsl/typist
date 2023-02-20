@@ -53,7 +53,7 @@ const ResetTests = () => {
 				<span className='change-nickname'>Reset tests</span>
 			</div>
 
-            <div className='section-interaction min-w-50'>
+            <div className='section-interaction md:min-w-50'>
 				<Button onClick={() => setModalOpen((modalOpen) => true)}>
 					Reset tests
 				</Button>

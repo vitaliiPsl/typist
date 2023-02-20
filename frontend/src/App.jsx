@@ -9,7 +9,6 @@ import { setLanguage, setWords } from './app/features/text/textSlice'
 import { useLoadTextQuery } from './app/features/text/textApi'
 
 import {
-	setNotification,
 	removeNotification,
 } from './app/features/notification/notificationSlice'
 
@@ -82,7 +81,7 @@ const App = () => {
 
 	return (
 		<div className='App min-h-screen min-w-full flex flex-col text-txPrimary bg-bgPrimary overflow-hidden'>
-			<div className='container min-w-full px-60 flex-1 flex flex-col gap-6'>
+			<div className='container min-w-full px-4 md:px-10 lg:px-24 xl:px-60 2xl:px-80 flex-1 flex flex-col gap-6'>
 				<Header user={user} />
 
 				{userIsLoading || textIsLoading ? (
