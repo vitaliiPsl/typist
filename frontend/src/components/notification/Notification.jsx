@@ -1,8 +1,14 @@
+import { useEffect } from 'react'
 import MaterialIcon from '../material-icon/MaterialIcon'
 
 const Notification = ({ message, type, onClose, className }) => {
-	let borderColor =
-		type === 'error' ? 'red' : type === 'success' ? 'green' : 'white'
+	let borderColor = type === 'error' ? 'red' : type === 'success' ? 'green' : 'white'
+
+    useEffect(() => {
+        setTimeout(() => {
+            onClose()
+        }, 10000)
+    }, [])
 
 	return (
 		<div
