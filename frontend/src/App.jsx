@@ -8,9 +8,7 @@ import { useLazyGetAuthenticatedUserQuery } from './app/features/auth/authApi'
 import { setLanguage, setWords } from './app/features/text/textSlice'
 import { useLazyLoadTextQuery } from './app/features/text/textApi'
 
-import {
-	removeNotification,
-} from './app/features/notification/notificationSlice'
+import { removeNotification } from './app/features/notification/notificationSlice'
 
 import { Route, Routes } from 'react-router-dom'
 
@@ -25,13 +23,13 @@ import SignUpForm from './components/auth/SignUpForm'
 import UserProfile from './components/profile/UserProfile'
 import Settings from './components/settings/Settings'
 
-import Error404 from './components/errorPages/Error404'
-import Error500 from './components/errorPages/Error500'
 import Spinner from './components/spinner/Spinner'
 
 import Image from './components/image/Image'
 import RankingModal from './components/ranking-modal/RankingModal'
 import Notification from './components/notification/Notification'
+
+import ErrorHandler from './components/error-hanlder/ErrorHandler'
 
 const App = () => {
 	const { user, token } = useSelector((state) => state.auth)
@@ -109,15 +107,40 @@ const App = () => {
 						<Route path='/error'>
 							<Route
 								path={'/error/internal'}
-								element={<Error500 />}
+								element={
+									<ErrorHandler
+										error={{
+											status: 500,
+											message:
+												'Something went wrong. Please, try again later',
+										}}
+									/>
+								}
 							/>
 							<Route
 								path={'/error/notfound'}
-								element={<Error404 />}
+								element={
+									<ErrorHandler
+										error={{
+											status: 404,
+											message: 'Page not found',
+										}}
+									/>
+								}
 							/>
 						</Route>
 
-						<Route path={'/*'} element={<Error404 />} />
+						<Route
+							path={'/*'}
+							element={
+								<ErrorHandler
+									error={{
+										status: 404,
+										message: 'Page not found',
+									}}
+								/>
+							}
+						/>
 					</Routes>
 				)}
 
