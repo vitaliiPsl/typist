@@ -11,4 +11,4 @@ export const textApi = apiSlice.injectEndpoints({
 	}),
 })
 
-export const { useLoadTextQuery } = textApi
+export const { useLoadTextQuery, useLazyLoadTextQuery } = textApi

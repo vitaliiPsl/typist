@@ -6,7 +6,7 @@ import { setUser } from './app/features/auth/authSlice'
 import { useLazyGetAuthenticatedUserQuery } from './app/features/auth/authApi'
 
 import { setLanguage, setWords } from './app/features/text/textSlice'
-import { useLoadTextQuery } from './app/features/text/textApi'
+import { useLazyLoadTextQuery } from './app/features/text/textApi'
 
 import {
 	removeNotification,
@@ -44,11 +44,7 @@ const App = () => {
 	const [getAuthenticatedUserQuery, { isLoading: userIsLoading }] =
 		useLazyGetAuthenticatedUserQuery()
 
-	const {
-		data: textData,
-		error: textError,
-		isLoading: textIsLoading,
-	} = useLoadTextQuery({ count: 500 })
+	const [getTextQuery, { isLoading: textIsLoading }] = useLazyLoadTextQuery()
 
 	useEffect(() => {
 		if (token) {
@@ -57,18 +53,8 @@ const App = () => {
 	}, [token])
 
 	useEffect(() => {
-		if (textData) {
-			dispatch(setWords(textData.words))
-			dispatch(setLanguage(textData.language))
-		}
-		if (textError) {
-			handleError(textError)
-		}
-	}, [textData, textError])
-
-	const handleError = (error) => {
-		console.log(error)
-	}
+		loadText(500)
+	}, [])
 
 	const loadAuthenticatedUser = async () => {
 		try {
@@ -77,6 +63,20 @@ const App = () => {
 		} catch (err) {
 			handleError(err)
 		}
+	}
+
+	const loadText = async (count) => {
+		try {
+			let res = await getTextQuery({ count }).unwrap()
+			dispatch(setWords(res.words))
+			dispatch(setLanguage(res.language))
+		} catch (err) {
+			handleError(err)
+		}
+	}
+
+	const handleError = (error) => {
+		console.log(error)
 	}
 
 	return (
