@@ -3,15 +3,18 @@ package com.example.typist.service.impl;
 import com.example.typist.exception.ResourceAlreadyExistException;
 import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.model.User;
+import com.example.typist.payload.EmailDto;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.repository.UserRepository;
 import com.example.typist.service.AuthService;
+import com.example.typist.service.EmailService;
 import com.example.typist.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -30,9 +34,16 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authManager;
     private final ModelMapper mapper;
+
+    @Value("${email.confirmation-url}")
+    private String confirmationUrl;
+
+    @Value("${email.redirect-url}")
+    private String redirectUrl;
 
     @Override
     public UserDto signUp(UserDto userDto) {

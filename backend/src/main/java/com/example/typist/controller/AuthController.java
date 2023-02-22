@@ -5,10 +5,8 @@ import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -17,6 +15,11 @@ import javax.validation.Valid;
 @RequestMapping("api/auth")
 public class AuthController {
     private final AuthService authService;
+
+    @PostMapping("/signin")
+    SignInResponse signIn(@Valid @RequestBody SignInRequest request) {
+        return authService.signIn(request);
+    }
 
     @PostMapping("/signup")
     public UserDto signup(@RequestBody @Valid UserDto userDto) {

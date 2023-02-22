@@ -10,6 +10,14 @@ import org.springframework.security.core.Authentication;
  */
 public interface AuthService {
     /**
+     * Authenticate the user with given credentials
+     *
+     * @param request credentials of the user
+     * @return sign in response that contains the JWT token
+     */
+    SignInResponse signIn(SignInRequest request);
+
+    /**
      * Register a new user
      *
      * @param userDto user to register
