@@ -66,7 +66,10 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
         authentication = authManager.authenticate(authentication);
 
-        String token = jwtService.createToken(authentication);
+        // authentication principal
+        User user = (User) authentication.getPrincipal();
+
+        String token = jwtService.createToken(user);
         return new SignInResponse(token);
     }
 

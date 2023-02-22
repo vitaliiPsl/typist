@@ -10,7 +10,6 @@ import com.example.typist.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -28,15 +27,21 @@ public class JwtServiceImpl implements JwtService {
     private long expirationTimeMin;
 
     @Override
-    public String createToken(Authentication authentication) {
-        log.debug("Create jwt token for authentication: {}", authentication);
+    public String createToken(User user) {
+        log.debug("Create jwt token for user: {} with default expiration time of {} mins", user, expirationTimeMin);
+
+        return createToken(user, expirationTimeMin);
+    }
+
+    @Override
+    public String createToken(User user, long expirationTimeMin) {
+        log.debug("Create jwt token for user: {}", user);
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
-        User user = (User) authentication.getPrincipal();
         String userId = String.valueOf(user.getId());
 
-        Instant expiresAt = getExpirationInstant();
+        Instant expiresAt = getExpirationTime(expirationTimeMin);
 
         return JWT.create()
                 .withSubject(userId)
@@ -62,7 +67,7 @@ public class JwtServiceImpl implements JwtService {
         }
     }
 
-    private Instant getExpirationInstant() {
+    private Instant getExpirationTime(long expirationTimeMin) {
         return LocalDateTime.now()
                 .plusMinutes(expirationTimeMin)
                 .atZone(ZoneId.systemDefault()).toInstant();

@@ -122,17 +122,21 @@ class AuthServiceImplTest {
                 .password(password)
                 .build();
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(email, password);
+        Authentication auth = Mockito.spy(new UsernamePasswordAuthenticationToken(email, password));
+
+        User user = User.builder().id("1234").email("j.doe@mail.com").build();
 
         // when
         when(authManager.authenticate(auth)).thenReturn(auth);
-        when(jwtService.createToken(auth)).thenReturn(jwt);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(jwtService.createToken(user)).thenReturn(jwt);
 
         SignInResponse response = authService.signIn(request);
 
         // then
         verify(authManager).authenticate(auth);
-        verify(jwtService).createToken(auth);
+        verify(auth).getPrincipal();
+        verify(jwtService).createToken(user);
 
         assertThat(response.getToken(), is(jwt));
     }

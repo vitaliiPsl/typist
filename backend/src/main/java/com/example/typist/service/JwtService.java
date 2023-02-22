@@ -1,6 +1,6 @@
 package com.example.typist.service;
 
-import org.springframework.security.core.Authentication;
+import com.example.typist.model.User;
 
 /**
  * Jwt service
@@ -8,12 +8,21 @@ import org.springframework.security.core.Authentication;
 public interface JwtService {
 
     /**
-     * Build jwt token from the user authentication
+     * Build jwt token for given principal
      *
-     * @param authentication user authentication
+     * @param user subject of the token
      * @return jwt token
      */
-    String createToken(Authentication authentication);
+    String createToken(User user);
+
+    /**
+     * Build jwt token for given principal
+     *
+     * @param user              subject of the token
+     * @param expirationTimeMin expiration time in minutes
+     * @return jwt token
+     */
+    String createToken(User user, long expirationTimeMin);
 
     /**
      * Decode jwt token
