@@ -16,6 +16,10 @@ spring:
       max-file-size: 10MB
       max-request-size: 15MB
 
+email:
+  from: no-reply@your.book.store
+  confirmation-url: localhost:8080/api/auth/confirm/
+
 server:
   port: ${PORT:8080}
 
