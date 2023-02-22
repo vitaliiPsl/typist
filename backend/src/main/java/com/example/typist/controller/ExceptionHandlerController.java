@@ -1,6 +1,7 @@
 package com.example.typist.controller;
 
 
+import com.example.typist.exception.ForbiddenException;
 import com.example.typist.exception.ResourceAlreadyExistException;
 import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.payload.error.ApiError;
@@ -36,6 +37,13 @@ public class ExceptionHandlerController {
 
         String error = "Invalid username or password";
         return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, error, e));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> handleForbiddenException(ForbiddenException e) {
+        log.error("Handle ForbiddenException exception: {}", e.getMessage(), e);
+
+        return buildResponseEntity(new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
