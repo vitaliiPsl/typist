@@ -3,6 +3,7 @@ package com.example.typist.service;
 import com.example.typist.payload.UserDto;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -26,12 +27,11 @@ public interface AuthService {
     UserDto signUp(UserDto userDto);
 
     /**
-     * Authenticate the user with given credentials
+     * Confirm email address
      *
-     * @param request credentials of the user
-     * @return sign in response that contains the JWT token
+     * @param token confirmation token
      */
-    SignInResponse signIn(SignInRequest request);
+    ResponseEntity<Void> confirmEmail(String token);
 
     /**
      * Exchange jwt token for user authentication

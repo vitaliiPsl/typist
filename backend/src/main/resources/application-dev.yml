@@ -6,6 +6,24 @@ spring:
       username: root
       password: root
       database: typist
+  mail:
+    host: ${MAIL_SERVER:localhost}
+    port: ${MAIL_SERVER_PORT:1025}
+    username: ${MAIL_SERVER_USERNAME:hello}
+    password: ${MAIL_SERVER_PASSWORD:hello}
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+email:
+  from: no-reply@typist
+  confirmation-url: ${CONFIRMATION_URL:http://localhost:8080/api/auth/confirm/}
+  redirect-url: ${EMAIL_CONFIRMATION_REDIRECT:http://localhost:3000/}
+
 logging:
   level:
     com.example.typist: DEBUG

@@ -26,9 +26,8 @@ public class AuthController {
         return authService.signUp(userDto);
     }
 
-    @PostMapping("/signin")
-    SignInResponse signIn(@Valid @RequestBody SignInRequest request) {
-        return authService.signIn(request);
+    @GetMapping("/confirm/{token}")
+    ResponseEntity<Void> confirmEmail(@PathVariable String token) {
+        return authService.confirmEmail(token);
     }
-
 }

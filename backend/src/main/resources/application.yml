@@ -16,9 +16,24 @@ spring:
       max-file-size: 10MB
       max-request-size: 15MB
 
+  mail:
+    host: ${MAIL_SERVER}
+    port: ${MAIL_SERVER_PORT}
+    username: ${MAIL_SERVER_USERNAME}
+    password: ${MAIL_SERVER_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+
 email:
-  from: no-reply@your.book.store
-  confirmation-url: localhost:8080/api/auth/confirm/
+  from: no-reply@typist
+  confirmation-url: ${CONFIRMATION_URL:localhost:8080/api/auth/confirm/}
+  redirect-url: ${EMAIL_CONFIRMATION_REDIRECT:http://localhost:3000/}
 
 server:
   port: ${PORT:8080}

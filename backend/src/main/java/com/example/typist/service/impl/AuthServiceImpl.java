@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -67,7 +70,35 @@ public class AuthServiceImpl implements AuthService {
         User user = createUser(userDto);
         userRepository.save(user);
 
+        // send email confirmation email
+        sendConfirmationEmail(user);
+
         return mapUserToUserDto(user);
+    }
+
+    @Override
+    public ResponseEntity<Void> confirmEmail(String token) {
+        log.debug("Confirm email address. Token: {}", token);
+
+        String userId = jwtService.decodeToken(token);
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            log.error("User with id '{}' doesn't exist", userId);
+            throw new ResourceNotFoundException("User", "id", userId);
+        }
+
+        User user = optionalUser.get();
+        if (user.isEnabled()) {
+            log.error("Email address of the user {} is already confirmed", user.getId());
+            throw new IllegalStateException("Email is already confirmed");
+        }
+
+        // enable user
+        user.setEnabled(true);
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
 
     @Override
@@ -99,6 +130,28 @@ public class AuthServiceImpl implements AuthService {
         return new PreAuthenticatedAuthenticationToken(user.get(), token);
     }
 
+    private void sendConfirmationEmail(User user) {
+        // confirmation token
+        String token = jwtService.createToken(user);
+
+        // confirmation link
+        String confirmationLink = confirmationUrl + token;
+
+        Map<String, Object> variables = Map.of(
+                "nickname", user.getNickname(),
+                "confirmation_link", confirmationLink
+        );
+
+        EmailDto email = EmailDto.builder()
+                .to(user.getEmail())
+                .subject("Email confirmation")
+                .template("email-confirmation")
+                .variables(variables)
+                .build();
+
+        emailService.sendTemplateEmail(email);
+    }
+
     private User createUser(UserDto userDto) {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
@@ -107,7 +160,7 @@ public class AuthServiceImpl implements AuthService {
                 .nickname(userDto.getNickname())
                 .password(encodedPassword)
                 .createdAt(LocalDateTime.now())
-                .enabled(true)
+                .enabled(false)
                 .build();
     }
 

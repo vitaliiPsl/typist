@@ -14,12 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -60,6 +63,8 @@ class AuthServiceImplTest {
     @Captor
     ArgumentCaptor<EmailDto> emailCaptor;
 
+
+
     @Test
     void givenSignUp_whenRegistrationDataIsValid_thenCreateNewUser() {
         // given
@@ -73,6 +78,10 @@ class AuthServiceImplTest {
 
         String emailConfirmationToken = "13te!3@51";
         String template = "email-confirmation";
+
+        String confirmationUrl = "app:port/api/confirm/";
+
+        ReflectionTestUtils.setField(authService, "confirmationUrl", confirmationUrl);
 
         // when
         when(userRepository.findByEmail(userDto.getEmail())).thenReturn(Optional.empty());
@@ -102,6 +111,7 @@ class AuthServiceImplTest {
         assertThat(email.getTo(), is(userDto.getEmail()));
         assertThat(email.getTemplate(), is(template));
         assertThat(email.getVariables().containsKey("confirmation_link"), is(true));
+        assertThat(email.getVariables().get("confirmation_link"), is(confirmationUrl + emailConfirmationToken));
 
         assertThat(response.getNickname(), is(userDto.getNickname()));
         assertThat(response.getEmail(), is(userDto.getEmail()));
@@ -135,6 +145,68 @@ class AuthServiceImplTest {
         // then
         assertThrows(ResourceAlreadyExistException.class, () -> authService.signUp(userDto));
         verify(userRepository).findByEmail(userDto.getEmail());
+    }
+
+    @Test
+    void givenConfirmEmail_whenValidRequest_thenEnableUser() {
+        // given
+        String token = "ejt1p37t30h";
+
+        String userId = "1234-qwer";
+        User user = User.builder().id(userId).enabled(false).build();
+
+        ReflectionTestUtils.setField(authService, "redirectUrl", "http://foo");
+
+        // when
+        when(jwtService.decodeToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        ResponseEntity<Void> res = authService.confirmEmail(token);
+
+        // then
+        verify(jwtService).decodeToken(token);
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(userCaptor.capture());
+
+        User saved = userCaptor.getValue();
+        assertThat(saved.getId(), is(userId));
+        assertThat(saved.isEnabled(), is(true));
+        assertThat(res.getStatusCode(), is(HttpStatus.FOUND));
+    }
+
+    @Test
+    void givenConfirmEmail_whenUserIsAlreadyEnabled_thenThrowException() {
+        // given
+        String token = "ejt1p37t30h";
+
+        String userId = "1234-qwer";
+        User user = User.builder().id(userId).enabled(true).build();
+
+        // when
+        when(jwtService.decodeToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // then
+        assertThrows(RuntimeException.class, () -> authService.confirmEmail(token));
+        verify(jwtService).decodeToken(token);
+        verify(userRepository).findById(userId);
+    }
+
+    @Test
+    void givenConfirmEmail_whenUserDoesntExist_thenThrowException() {
+        // given
+        String token = "ejt1p37t30h";
+
+        String userId = "1234-qwer";
+
+        // when
+        when(jwtService.decodeToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(RuntimeException.class, () -> authService.confirmEmail(token));
+        verify(jwtService).decodeToken(token);
+        verify(userRepository).findById(userId);
     }
 
     @Test
