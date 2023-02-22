@@ -33,7 +33,7 @@ spring:
 email:
   from: no-reply@typist
   confirmation-url: ${CONFIRMATION_URL:localhost:8080/api/auth/confirm/}
-  redirect-url: ${EMAIL_CONFIRMATION_REDIRECT:http://localhost:3000/}
+  redirect-url: ${EMAIL_CONFIRMATION_REDIRECT:http://localhost:3000/auth/signin}
 
 server:
   port: ${PORT:8080}
