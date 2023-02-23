@@ -7,8 +7,6 @@ import { setNotification } from '../../app/features/notification/notificationSli
 
 import { useSignUpMutation } from '../../app/features/auth/authApi'
 
-import { useNavigate } from 'react-router-dom'
-
 import Button from '../button/Button'
 import TextField from '../text-field/TextField'
 
@@ -18,7 +16,6 @@ const SignUpForm = ({}) => {
 	const [userDetails, setUserDetails] = useState(initUserDetails)
 
     const dispatch = useDispatch()
-	const navigate = useNavigate()
 
 	const [signUpQuery, { isLoading }] = useSignUpMutation()
 
@@ -27,7 +24,7 @@ const SignUpForm = ({}) => {
 
 		try {
 			await signUpQuery(userDetails).unwrap()
-			navigate('/auth/signin')
+            dispatch(setNotification({message: "Thanks for registering! Please confirm your email by following the link in the email we sent you"}))
 		} catch (err) {
 			handleError(err)
 		}
