@@ -5,6 +5,7 @@ import com.example.typist.exception.ResourceNotFoundException;
 import com.example.typist.model.User;
 import com.example.typist.payload.EmailDto;
 import com.example.typist.payload.UserDto;
+import com.example.typist.payload.auth.ResendEmailTokenRequest;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.repository.UserRepository;
@@ -47,6 +48,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Value("${email.redirect-url}")
     private String redirectUrl;
+
+    @Value("${email.token-expiration-time-min}")
+    private long emailConfirmationTokenExpirationMin;
 
     @Override
     public UserDto signUp(UserDto userDto) {
@@ -102,6 +106,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void resendEmailConfirmationToken(ResendEmailTokenRequest request) {
+        log.debug("Resend confirmation token to email: {}", request.getEmail());
+
+        String email = request.getEmail();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if(optionalUser.isEmpty()) {
+            log.error("User with email {} doesn't exist", email);
+            throw new ResourceNotFoundException("User", "email", email);
+        }
+
+        User user = optionalUser.get();
+        if(user.isEnabled()) {
+            log.error("User {} is already enabled", user.getId());
+            throw new IllegalStateException("Email is already confirmed");
+        }
+
+        sendConfirmationEmail(user);
+    }
+
+    @Override
     public SignInResponse signIn(SignInRequest request) {
         log.debug("Authenticate user: {}", request.getEmail());
 
@@ -132,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
 
     private void sendConfirmationEmail(User user) {
         // confirmation token
-        String token = jwtService.createToken(user);
+        String token = jwtService.createToken(user, emailConfirmationTokenExpirationMin);
 
         // confirmation link
         String confirmationLink = confirmationUrl + token;

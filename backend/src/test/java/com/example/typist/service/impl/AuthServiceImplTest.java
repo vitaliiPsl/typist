@@ -4,6 +4,7 @@ import com.example.typist.exception.ResourceAlreadyExistException;
 import com.example.typist.model.User;
 import com.example.typist.payload.EmailDto;
 import com.example.typist.payload.UserDto;
+import com.example.typist.payload.auth.ResendEmailTokenRequest;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
 import com.example.typist.repository.UserRepository;
@@ -63,8 +64,6 @@ class AuthServiceImplTest {
     @Captor
     ArgumentCaptor<EmailDto> emailCaptor;
 
-
-
     @Test
     void givenSignUp_whenRegistrationDataIsValid_thenCreateNewUser() {
         // given
@@ -76,11 +75,13 @@ class AuthServiceImplTest {
 
         String encodedPassword = "rkep4h1etq8i";
 
-        String emailConfirmationToken = "13te!3@51";
-        String template = "email-confirmation";
+        long tokenExpirationTimeMin = 15;
+        String confirmationToken = "13te!3@51";
 
+        String template = "email-confirmation";
         String confirmationUrl = "app:port/api/confirm/";
 
+        ReflectionTestUtils.setField(authService, "emailConfirmationTokenExpirationMin", tokenExpirationTimeMin);
         ReflectionTestUtils.setField(authService, "confirmationUrl", confirmationUrl);
 
         // when
@@ -88,7 +89,7 @@ class AuthServiceImplTest {
         when(userRepository.findByNickname(userDto.getNickname())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(userDto.getPassword())).thenReturn(encodedPassword);
         when(userRepository.save(Mockito.any(User.class))).then(returnsFirstArg());
-        when(jwtService.createToken(Mockito.any(User.class))).thenReturn(emailConfirmationToken);
+        when(jwtService.createToken(Mockito.any(User.class), Mockito.eq(tokenExpirationTimeMin))).thenReturn(confirmationToken);
 
         UserDto response = authService.signUp(userDto);
 
@@ -96,7 +97,7 @@ class AuthServiceImplTest {
         verify(userRepository).findByEmail(userDto.getEmail());
         verify(userRepository).findByNickname(userDto.getNickname());
         verify(passwordEncoder).encode(userDto.getPassword());
-        verify(jwtService).createToken(Mockito.any(User.class));
+        verify(jwtService).createToken(Mockito.any(User.class), Mockito.eq(tokenExpirationTimeMin));
         verify(userRepository).save(userCaptor.capture());
         verify(emailService).sendTemplateEmail(emailCaptor.capture());
 
@@ -106,12 +107,11 @@ class AuthServiceImplTest {
         assertThat(user.getPassword(), is(encodedPassword));
         assertThat(user.isEnabled(), is(false));
 
-
         EmailDto email = emailCaptor.getValue();
         assertThat(email.getTo(), is(userDto.getEmail()));
         assertThat(email.getTemplate(), is(template));
         assertThat(email.getVariables().containsKey("confirmation_link"), is(true));
-        assertThat(email.getVariables().get("confirmation_link"), is(confirmationUrl + emailConfirmationToken));
+        assertThat(email.getVariables().get("confirmation_link"), is(confirmationUrl + confirmationToken));
 
         assertThat(response.getNickname(), is(userDto.getNickname()));
         assertThat(response.getEmail(), is(userDto.getEmail()));
@@ -207,6 +207,71 @@ class AuthServiceImplTest {
         assertThrows(RuntimeException.class, () -> authService.confirmEmail(token));
         verify(jwtService).decodeToken(token);
         verify(userRepository).findById(userId);
+    }
+
+    @Test
+    void givenResendConfirmationToken_whenRequestIsValid_thenResendToken() {
+        // given
+        String email = "j.doe@mail.com";
+        ResendEmailTokenRequest req = new ResendEmailTokenRequest(email);
+
+        User user = User.builder().image("1234-qwer").email(email).nickname("doe").enabled(false).build();
+
+        long tokenExpirationTimeMin = 15;
+        String confirmationToken = "13te!3@51";
+
+        String template = "email-confirmation";
+        String confirmationUrl = "app:port/api/confirm/";
+
+        ReflectionTestUtils.setField(authService, "emailConfirmationTokenExpirationMin", tokenExpirationTimeMin);
+        ReflectionTestUtils.setField(authService, "confirmationUrl", confirmationUrl);
+
+        // when
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(jwtService.createToken(user, tokenExpirationTimeMin)).thenReturn(confirmationToken);
+
+        authService.resendEmailConfirmationToken(req);
+
+        // then
+        verify(userRepository).findByEmail(email);
+        verify(jwtService).createToken(user, tokenExpirationTimeMin);
+        verify(emailService).sendTemplateEmail(emailCaptor.capture());
+
+        EmailDto mail = emailCaptor.getValue();
+        assertThat(mail.getTo(), is(email));
+        assertThat(mail.getTemplate(), is(template));
+        assertThat(mail.getVariables().containsKey("confirmation_link"), is(true));
+        assertThat(mail.getVariables().get("confirmation_link"), is(confirmationUrl + confirmationToken));
+    }
+
+    @Test
+    void givenResendConfirmationToken_whenUserIsAlreadyEnabled_thenThrowException() {
+        // given
+        String email = "j.doe@mail.com";
+        ResendEmailTokenRequest req = new ResendEmailTokenRequest(email);
+
+        User user = User.builder().image("1234-qwer").email(email).nickname("doe").enabled(true).build();
+
+        // when
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        // then
+        assertThrows(RuntimeException.class, () -> authService.resendEmailConfirmationToken(req));
+        verify(userRepository).findByEmail(email);
+    }
+
+    @Test
+    void givenResendConfirmationToken_whenUserDoesntExist_thenThrowException() {
+        // given
+        String email = "j.doe@mail.com";
+        ResendEmailTokenRequest req = new ResendEmailTokenRequest(email);
+
+        // when
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(RuntimeException.class, () -> authService.resendEmailConfirmationToken(req));
+        verify(userRepository).findByEmail(email);
     }
 
     @Test

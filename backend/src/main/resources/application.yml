@@ -32,6 +32,7 @@ spring:
 
 email:
   from: no-reply@typist
+  token-expiration-time-min: 15
   confirmation-url: ${CONFIRMATION_URL:localhost:8080/api/auth/confirm/}
   redirect-url: ${EMAIL_CONFIRMATION_REDIRECT:http://localhost:3000/auth/signin}
 

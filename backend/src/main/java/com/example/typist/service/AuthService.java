@@ -1,6 +1,7 @@
 package com.example.typist.service;
 
 import com.example.typist.payload.UserDto;
+import com.example.typist.payload.auth.ResendEmailTokenRequest;
 import com.example.typist.payload.auth.SignInRequest;
 import com.example.typist.payload.auth.SignInResponse;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,13 @@ public interface AuthService {
      * @param token confirmation token
      */
     ResponseEntity<Void> confirmEmail(String token);
+
+    /**
+     * Resend email confirmation token
+     *
+     * @param request request that contains email address
+     */
+    void resendEmailConfirmationToken(ResendEmailTokenRequest request);
 
     /**
      * Exchange jwt token for user authentication
