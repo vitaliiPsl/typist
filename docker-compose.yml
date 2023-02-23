@@ -7,6 +7,7 @@ services:
       - "8080:8080"
     depends_on:
       - mongodb
+      - maildev
     environment:
       PORT: 8080
       MONGODB_HOST: mongodb
@@ -14,15 +15,19 @@ services:
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: root
       MONGODB_DATABASE: typist
+      MAIL_SERVER: maildev
+      MAIL_SERVER_PORT: 1025
+      MAIL_SERVER_USERNAME: 
+      MAIL_SERVER_PASSWORD: 
 
-  # frontend:
-  #   build: ./frontend/
-  #   image: typist-frontend
-  #   container_name: typist_frontend
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - backend
+  frontend:
+    build: ./frontend/
+    image: typist-frontend
+    container_name: typist_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
 
   mongodb:
     image: mongo
@@ -32,3 +37,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
