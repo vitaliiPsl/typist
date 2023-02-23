@@ -23,13 +23,6 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 @Slf4j
 @ControllerAdvice
 public class ExceptionHandlerController {
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ApiError> handleServerError(Throwable e) {
-        log.error("handle server error: {}", e.getMessage(), e);
-
-        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Server error");
-        return buildResponseEntity(apiError);
-    }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleAuthenticationException(BadCredentialsException e) {
