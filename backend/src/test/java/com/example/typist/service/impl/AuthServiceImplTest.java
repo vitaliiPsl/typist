@@ -148,7 +148,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void whenConfirmEmail_givenValidRequest_thenEnableUser() {
+    void whenConfirmEmail_givenValidRequest_thenEnableUserAndRedirectToLogin() {
         // given
         String token = "ejt1p37t30h";
 
@@ -175,21 +175,26 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void whenConfirmEmail_givenUserIsAlreadyEnabled_thenThrowException() {
+    void whenConfirmEmail_givenUserIsAlreadyEnabled_thenRedirectToLogin() {
         // given
         String token = "ejt1p37t30h";
 
         String userId = "1234-qwer";
-        User user = User.builder().id(userId).enabled(true).build();
+        User user = User.builder().id(userId).enabled(false).build();
+
+        ReflectionTestUtils.setField(authService, "redirectUrl", "http://foo");
 
         // when
         when(jwtService.decodeToken(token)).thenReturn(userId);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
+        ResponseEntity<Void> res = authService.confirmEmail(token);
+
         // then
-        assertThrows(RuntimeException.class, () -> authService.confirmEmail(token));
         verify(jwtService).decodeToken(token);
         verify(userRepository).findById(userId);
+
+        assertThat(res.getStatusCode(), is(HttpStatus.FOUND));
     }
 
     @Test

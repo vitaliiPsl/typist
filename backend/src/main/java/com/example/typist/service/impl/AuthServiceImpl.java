@@ -87,14 +87,10 @@ public class AuthServiceImpl implements AuthService {
         String userId = jwtService.decodeToken(token);
 
         User user = getUser(userId);
-        if (user.isEnabled()) {
-            log.error("Email address of the user {} is already confirmed", user.getId());
-            throw new IllegalStateException("Email is already confirmed");
+        if (!user.isEnabled()) {
+            user.setEnabled(true);
+            userRepository.save(user);
         }
-
-        // enable user
-        user.setEnabled(true);
-        userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
