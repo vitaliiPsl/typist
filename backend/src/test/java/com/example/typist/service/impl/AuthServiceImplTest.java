@@ -325,12 +325,12 @@ class AuthServiceImplTest {
 
 
     @Test
-    void givenExchangeToken_whenTokenIsValidAndUserExist_thenReturnUserAuthentication() {
+    void givenExchangeToken_whenTokenIsValidAndUserExistAndEnabled_thenReturnUserAuthentication() {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
         String userId = "1234";
-        User user = User.builder().id(userId).email("j.doe@mail.com").build();
+        User user = User.builder().id(userId).email("j.doe@mail.com").enabled(true).build();
 
         // when
         when(jwtService.decodeToken(token)).thenReturn(userId);
@@ -342,6 +342,30 @@ class AuthServiceImplTest {
         verify(jwtService).decodeToken(token);
         verify(userRepository).findById(userId);
 
+        assertThat(res.isAuthenticated(), is(true));
+        assertThat((User) res.getPrincipal(), is(user));
+        assertThat((String) res.getCredentials(), is(token));
+    }
+
+    @Test
+    void givenExchangeToken_whenTokenIsValidAndUserExistButNotEnabled_thenReturnUserAuthenticationNotAuthenticated() {
+        // given
+        String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
+
+        String userId = "1234";
+        User user = User.builder().id(userId).email("j.doe@mail.com").enabled(false).build();
+
+        // when
+        when(jwtService.decodeToken(token)).thenReturn(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        Authentication res = authService.exchangeToken(token);
+
+        // then
+        verify(jwtService).decodeToken(token);
+        verify(userRepository).findById(userId);
+
+        assertThat(res.isAuthenticated(), is(false));
         assertThat((User) res.getPrincipal(), is(user));
         assertThat((String) res.getCredentials(), is(token));
     }

@@ -86,13 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
         String userId = jwtService.decodeToken(token);
 
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            log.error("User with id '{}' doesn't exist", userId);
-            throw new ResourceNotFoundException("User", "id", userId);
-        }
-
-        User user = optionalUser.get();
+        User user = getUser(userId);
         if (user.isEnabled()) {
             log.error("Email address of the user {} is already confirmed", user.getId());
             throw new IllegalStateException("Email is already confirmed");
@@ -145,13 +139,14 @@ public class AuthServiceImpl implements AuthService {
 
         String userId = jwtService.decodeToken(token);
 
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            log.error("User with id '{}' doesn't exist", userId);
-            throw new ResourceNotFoundException("User", "id", userId);
+        User user = getUser(userId);
+        PreAuthenticatedAuthenticationToken authToken = new PreAuthenticatedAuthenticationToken(user, token);
+
+        if(user.isEnabled()) {
+            authToken.setAuthenticated(true);
         }
 
-        return new PreAuthenticatedAuthenticationToken(user.get(), token);
+        return authToken;
     }
 
     private void sendConfirmationEmail(User user) {
@@ -186,6 +181,16 @@ public class AuthServiceImpl implements AuthService {
                 .createdAt(LocalDateTime.now())
                 .enabled(false)
                 .build();
+    }
+
+    private User getUser(String userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            log.error("User with id '{}' doesn't exist", userId);
+            throw new ResourceNotFoundException("User", "id", userId);
+        }
+
+        return optionalUser.get();
     }
 
     private UserDto mapUserToUserDto(User user) {
