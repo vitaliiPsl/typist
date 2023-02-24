@@ -65,7 +65,7 @@ class AuthServiceImplTest {
     ArgumentCaptor<EmailDto> emailCaptor;
 
     @Test
-    void givenSignUp_whenRegistrationDataIsValid_thenCreateNewUser() {
+    void whenSignUp_givenRegistrationDataIsValid_thenCreateNewUser() {
         // given
         UserDto userDto = UserDto.builder()
                 .email("j.doe@mail.com")
@@ -118,7 +118,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenSignUp_whenEmailIsTaken_thenThrowException() {
+    void whenSignUp_givenEmailIsTaken_thenThrowException() {
         // given
         UserDto userDto = UserDto.builder().email("j.doe@mail.com").build();
 
@@ -133,7 +133,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenSignUp_whenNicknameIsTaken_thenThrowException() {
+    void whenSignUp_givenNicknameIsTaken_thenThrowException() {
         // given
         UserDto userDto = UserDto.builder().nickname("j.doe").build();
 
@@ -148,7 +148,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenConfirmEmail_whenValidRequest_thenEnableUser() {
+    void whenConfirmEmail_givenValidRequest_thenEnableUser() {
         // given
         String token = "ejt1p37t30h";
 
@@ -175,7 +175,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenConfirmEmail_whenUserIsAlreadyEnabled_thenThrowException() {
+    void whenConfirmEmail_givenUserIsAlreadyEnabled_thenThrowException() {
         // given
         String token = "ejt1p37t30h";
 
@@ -193,7 +193,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenConfirmEmail_whenUserDoesntExist_thenThrowException() {
+    void whenConfirmEmail_givenUserDoesntExist_thenThrowException() {
         // given
         String token = "ejt1p37t30h";
 
@@ -210,7 +210,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenResendConfirmationToken_whenRequestIsValid_thenResendToken() {
+    void whenResendConfirmationToken_givenRequestIsValid_thenResendToken() {
         // given
         String email = "j.doe@mail.com";
         ResendEmailTokenRequest req = new ResendEmailTokenRequest(email);
@@ -245,7 +245,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenResendConfirmationToken_whenUserIsAlreadyEnabled_thenThrowException() {
+    void whenResendConfirmationToken_givenUserIsAlreadyEnabled_thenThrowException() {
         // given
         String email = "j.doe@mail.com";
         ResendEmailTokenRequest req = new ResendEmailTokenRequest(email);
@@ -261,7 +261,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenResendConfirmationToken_whenUserDoesntExist_thenThrowException() {
+    void whenResendConfirmationToken_givenUserDoesntExist_thenThrowException() {
         // given
         String email = "j.doe@mail.com";
         ResendEmailTokenRequest req = new ResendEmailTokenRequest(email);
@@ -275,7 +275,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenSignIn_whenCredentialsAreValid_thenGenerateJwt() {
+    void whenSignIn_givenCredentialsAreValid_thenGenerateJwt() {
         // given
         String email = "j.doe@mail.com";
         String password = "password";
@@ -306,7 +306,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenSignIn_whenCredentialsAreInvalid_thenThrowException() {
+    void whenSignIn_givenCredentialsAreInvalid_thenThrowException() {
         // given
         String email = "j.doe@mail.com";
         String password = "password";
@@ -325,7 +325,7 @@ class AuthServiceImplTest {
 
 
     @Test
-    void givenExchangeToken_whenTokenIsValidAndUserExistAndEnabled_thenReturnUserAuthentication() {
+    void whenExchangeToken_givenTokenIsValidAndUserExistAndEnabled_thenReturnUserAuthentication() {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
@@ -348,7 +348,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenExchangeToken_whenTokenIsValidAndUserExistButNotEnabled_thenReturnUserAuthenticationNotAuthenticated() {
+    void whenExchangeToken_givenTokenIsValidAndUserExistButNotEnabled_thenReturnUserAuthenticationNotAuthenticated() {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
@@ -371,7 +371,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenExchangeToken_whenUserDoesntExist_thenThrowException() {
+    void whenExchangeToken_givenUserDoesntExist_thenThrowException() {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
@@ -388,7 +388,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void givenExchangeToken_whenTokenIsInvalid_thenThrowException() {
+    void whenExchangeToken_givenTokenIsInvalid_thenThrowException() {
         // given
         String token = "eyJ0eXA.eyJzdWIi.Ou-2-0gYTg";
 
