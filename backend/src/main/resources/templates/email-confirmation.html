@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Confirm Your Email Address</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #ddd;
+        }
+        .container {
+            flex: 1;
+            max-width: 600px;
+            padding: 16px 24px;
+            margin: 24px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0;
+        }
+        .title {
+            text-align: center;
+        }
+        .nickname{
+            font-weight: bold;
+        }
+        .link-wrapper {
+            text-align: center;
+        }
+        .confirmation-btn {
+            display: block;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #ff9800;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .confirmation-link {
+            color:  #1d87da;
+            word-break: break-word;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="title">Confirm Your Email Address</h2>
+    <p>Dear <span th:text="${nickname}" class="nickname">User</span></p>
+    <p>To complete your registration and start using our service, we need to confirm your email address.</p>
+    <div class="link-wrapper">
+        <a th:href="@{${confirmation_link}}" class="confirmation-btn">Confirm Your Email Address</a>
+    </div>
+    <p>If the above link does not work, please copy and paste the following URL into your web browser:</p>
+    <p th:text="${confirmation_link}" class="confirmation-link">confirmation link</p>
+</div>
+</body>
+
+</html>

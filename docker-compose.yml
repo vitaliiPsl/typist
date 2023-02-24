@@ -1,38 +1,46 @@
-version: '2'
 services:
   backend:
-    build: .
-    image: typist_backend
+    build: ./backend/
+    image: typist-backend
     container_name: typist_backend
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - mongodb
+      - maildev
     environment:
       PORT: 8080
-      DB_URI: jdbc:postgresql://db:5432/postgres
-      DB_USERNAME: dev
-      DB_PASSWORD: dev123
-      S3_ACCESS_KEY: access_key
-      S3_SECRET_KEY: secret_key
-      S3_BUCKET: bucket
-      S3_REGION: region
-      S3_DEFAULT_USER_IMAGE: default
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: root
+      MONGODB_DATABASE: typist
+      MAIL_SERVER: maildev
+      MAIL_SERVER_PORT: 1025
+      MAIL_SERVER_USERNAME: 
+      MAIL_SERVER_PASSWORD: 
 
   frontend:
-    build: ./src/front
-    image: typist_frontend
+    build: ./frontend/
+    image: typist-frontend
     container_name: typist_frontend
     ports:
-      - "4000:80"
+      - "3000:3000"
     depends_on:
       - backend
-    environment:
-      REACT_APP_API: http://backend:8080/api/
 
-  db:
-    image: postgres:alpine
-    container_name: db
+  mongodb:
+    image: mongo
+    container_name: mongodb-typist
+    ports:
+      - 27017:27017
     environment:
-      POSTGRES_USER: dev
-      POSTGRES_PASSWORD: dev123
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
